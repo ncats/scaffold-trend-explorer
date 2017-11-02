@@ -8,7 +8,8 @@ GET     /about                      controllers.Application.about
 
 GET     /api/v1/compounds/:smi/counts   controllers.Compound.counts(smi: String)
 GET     /api/v1/compounds/:smi/raw      controllers.Compound.raw(smi: String)
-GET     /api/v1/assays           controllers.Assay.get
+GET     /api/v1/assays/:smi/counts      controllers.Assay.counts(smi: String)
+GET     /api/v1/assays/:smi/raw         controllers.Assay.raw(smi: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
