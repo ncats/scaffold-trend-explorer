@@ -6,6 +6,8 @@ lazy val `scaffoldtrends` = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
+routesGenerator := InjectedRoutesGenerator
+
 libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice, openId)
 
 libraryDependencies ++= Seq("org.postgresql" % "postgresql" % "42.1.4"
