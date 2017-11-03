@@ -9,6 +9,8 @@ import play.api.mvc._
 class Compound @Inject()(db: Database, cc: ControllerComponents)
   extends AbstractController(cc) with EntityHelper {
 
+  val chembl = new ChemblQueries(db)
+
   def raw(smi: String) = Action {
     if (smi.isEmpty) BadRequest("Must specify a SMILES string")
 
@@ -36,21 +38,9 @@ class Compound @Inject()(db: Database, cc: ControllerComponents)
 
   def counts(smi: String) = Action {
     if (smi.isEmpty) BadRequest("Must specify a SMILES string")
-
-    db.withConnection { conn =>
-      val pst = conn.prepareStatement("select docs.year, count(cs.molregno) as nmol " +
-        "from compound_structures cs, " +
-        "activities act, docs " +
-        "where rdmol_smiles@>'" + smi + "' " +
-        "and cs.molregno = act.molregno " +
-        "and act.doc_id = docs.doc_id " +
-        "and act.standard_relation = '=' " +
-        "and docs.year is not null " +
-        "group by year " +
-        "order by year")
-      val riter = results(pst.executeQuery())(rs => Map("year" -> rs.getInt(1), "count" -> rs.getInt(2)))
-      Ok(Json.toJson(riter.toList))
+    val listOfMaps = chembl.compoundCounts(smi).map {
+      case (k, v) => Map("year" -> k, "count" -> v)
     }
-
+    Ok(Json.toJson(listOfMaps))
   }
 }
