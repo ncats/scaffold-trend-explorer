@@ -8,15 +8,12 @@ scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice, openId)
 
-libraryDependencies += "org.postgresql" % "postgresql" % "42.1.4"
-
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.0"
-
-libraryDependencies += "com.typesafe.play" %% "play-iteratees" % "2.6.1"
-
-libraryDependencies += "com.typesafe.play" %% "play-iteratees-reactive-streams" % "2.6.1"
-
-libraryDependencies ++= Seq("org.webjars" % "bootstrap" % "3.3.6"
+libraryDependencies ++= Seq("org.postgresql" % "postgresql" % "42.1.4"
+  , "com.typesafe.play" %% "play-json" % "2.6.0"
+  , "com.typesafe.play" %% "play-iteratees" % "2.6.1"
+  , "com.typesafe.play" %% "play-iteratees-reactive-streams" % "2.6.1"
+  , "org.webjars" %% "webjars-play" % "2.6.1"
+  , "org.webjars" % "bootstrap" % "3.3.6"
   , "org.webjars" % "highcharts" % "6.0.2"
   , "org.webjars" % "datatables" % "1.10.12"
   , "org.webjars" % "datatables-plugins" % "1.10.12"
