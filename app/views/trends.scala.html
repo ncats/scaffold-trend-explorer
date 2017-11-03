@@ -1,4 +1,8 @@
-@(form: Form[SmilesForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+@(form: Form[SmilesForm.Data],
+        postUrl: Call,
+        smiles: Seq[String],
+        smiColMap: Map[String, String],
+        trendData: Map[String, Map[Int, Int]])(implicit request: MessagesRequestHeader)
 
 @main("Scaffold Trend Explorer") {
 
@@ -21,6 +25,20 @@
     </div>
 
     <div class="row">
+    @for(s <- smiles) {
+        <div class="col-md-1">
+            <div class="card" id="card-@s">
+                <img class="card-img-top btn"
+                src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
+                alt="@s" style="border-width: 5px;
+                    border-color: @smiColMap(s)
+                ">
+                <div class="card-block"></div>
+            </div>
+        </div>
+    }
+    </div>
+    <div class="row">
         <div class="col-lg-8" id="plotDiv">
 
         </div>
@@ -30,29 +48,25 @@
     </div>
 
     <script type="text/javascript">
+            /*
+             defining(trendData.values.flatMap(m => m.keySet).toSet.toList.sorted){ uniqueYears =>
+             }
+             */
             $(function () {
                 var myChart = Highcharts.chart('plotDiv', {
                     chart: {
-                        type: 'bar'
-                    },
-                    title: {
-                        text: 'Fruit Consumption'
+                        type: 'line'
                     },
                     xAxis: {
-                        categories: ['Apples', 'Bananas', 'Oranges']
-                    },
-                    yAxis: {
                         title: {
-                            text: 'Fruit eaten'
+                            text: ''
                         }
                     },
-                    series: [{
-                        name: 'Jane',
-                        data: [1, 0, 4]
-                    }, {
-                        name: 'John',
-                        data: [5, 7, 3]
-                    }]
+                    series: [
+                        @for( (smi,cmap) <- trendData ) {
+                        {name: '@smi', data: [1, 1, 1]}
+                        }
+                    ]
                 });
             });
     </script>
