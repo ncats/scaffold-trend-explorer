@@ -16,7 +16,7 @@ object TrendForm {
 
   val form = Form(
     mapping(
-      "smiles" -> nonEmptyText,
+      "smiles" -> text,
       "property" -> text)(Data.apply)(Data.unapply)
   )
 

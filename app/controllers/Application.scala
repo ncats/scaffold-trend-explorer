@@ -33,8 +33,16 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
         BadRequest(views.html.about())
       },
       data => {
-        smilesList += data.smiles
-        Redirect(routes.Application.displayTrends(smilesList, data.property))
+        data.smiles match {
+          case "" if smilesList.isEmpty => BadRequest(views.html.about())
+          case "" if smilesList.nonEmpty => {
+            Redirect(routes.Application.displayTrends(smilesList, data.property))
+          }
+          case _ => {
+            smilesList += data.smiles
+            Redirect(routes.Application.displayTrends(smilesList, data.property))
+          }
+        }
       }
     )
   }
