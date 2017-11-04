@@ -18,6 +18,7 @@ class Application @Inject()(db: Database, cc: MessagesControllerComponents, conf
   private val smilesList = ListBuffer[String]()
 
   def index = Action { implicit request =>
+    smilesList.clear()
     Ok(views.html.index(SmilesForm.form, routes.Application.search()))
   }
 
