@@ -16,6 +16,7 @@ libraryDependencies ++= Seq("org.postgresql" % "postgresql" % "42.1.4"
   , "com.typesafe.play" %% "play-iteratees-reactive-streams" % "2.6.1"
   , "org.webjars" %% "webjars-play" % "2.6.1"
   , "org.webjars" % "bootstrap" % "3.3.6"
+  , "com.adrianhurt" %% "play-bootstrap" % "1.2-P26-B3"
   , "org.webjars" % "highcharts" % "6.0.2"
   , "org.webjars" % "datatables" % "1.10.12"
   , "org.webjars" % "datatables-plugins" % "1.10.12"
@@ -31,6 +32,8 @@ libraryDependencies ++= Seq("org.postgresql" % "postgresql" % "42.1.4"
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 resolvers += "webjars" at "http://webjars.github.com/m2"
+
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 // some vars to generate BuildInfo
 val branch = "git rev-parse --abbrev-ref HEAD".!!.trim

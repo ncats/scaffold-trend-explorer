@@ -12,19 +12,7 @@
     </div>
 
     <div class="row">
-        @helper.form(postUrl) {
-            @helper.CSRF.formField
-            @helper.inputText(form("smiles"))
-            @helper.select(form("property"),
-                options = Seq(
-                    "compounds" -> "Compounds",
-                    "assays" -> "Assays"
-                ),
-                '_selected -> "Compounds",
-                '_label -> "Trend"
-            )
-            <button>Search</button>
-        }
+        @tform(form, postUrl)
     </div>
 
     <div class="row">

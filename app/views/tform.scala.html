@@ -1,0 +1,18 @@
+@(form: Form[TrendForm.Data], postUrl: Call) {
+
+    import b3.inline.fieldConstructor
+    @b3.form(postUrl) {
+        @helper.CSRF.formField
+        @b3.text(form("smiles"), '_placeholder -> "Enter a SMILES string")
+        @b3.select(form("property"),
+            options = Seq(
+                "compounds" -> "Compounds",
+                "assays" -> "Assays"
+            ),
+            '_selected -> "Compounds",
+            '_label -> "Trend"
+        )
+        @b3.submit('class -> "btn btn-default") { Search }
+        <!-- <button>Search</button> -->
+    }
+}

@@ -16,19 +16,8 @@
 @main("Scaffold Trend Explorer") {
 
     <div class="row">
-        @helper.form(postUrl) {
-            @helper.CSRF.formField
-            @helper.inputText(form("smiles"))
-            @helper.select(form("property"),
-                options = Seq(
-                    "compounds" -> "Compounds",
-                    "assays" -> "Assays"
-                ),
-                '_selected -> "Compounds",
-                '_label -> "Trend"
-            )
-            <button>Search</button>
-        }
+        @tform(form, postUrl)
+
         @*<form class="form-inline"role="search" method="GET" action="@controllers.routes.Application.search(null)">*@
         @*<div class=" form-group">*@
         @*<input type="text" class="form-control"*@
