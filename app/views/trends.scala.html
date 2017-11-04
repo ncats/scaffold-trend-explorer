@@ -71,7 +71,7 @@
                     credits:false,
                     chart: {
                         renderTo: 'plotDiv',
-                        type: 'line',
+                        type: 'line'
                     },
                     title: {
                         text: null
@@ -85,6 +85,11 @@
                         title: {
                             text: '@getYaxisLabel(property)'
                         }
+                    },
+                    tooltip: {
+                        valueSuffix: '',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                        shared: true
                     },
                     series: [
                         @for( (smi,cmap) <- trendData ) {
