@@ -44,6 +44,7 @@ class Application @Inject()(db: Database, cc: MessagesControllerComponents, conf
     val colorPalette = List[String]("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
       "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a",
       "#ffff99", "#b15928")
+
     val smiColMap = smiles.zip(colorPalette).toMap
 
     val chembl = new ChemblQueries(db)
