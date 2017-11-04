@@ -33,6 +33,7 @@ class Application @Inject()(db: Database, cc: MessagesControllerComponents, conf
       },
       data => {
         smilesList += data.smiles
+        println(smilesList)
         Redirect(routes.Application.displayTrends(smilesList, data.property))
       }
     )
@@ -40,12 +41,10 @@ class Application @Inject()(db: Database, cc: MessagesControllerComponents, conf
 
   def displayTrends(smiles: Seq[String], property: String) = Action { implicit request =>
 
-    // we'll assume we have up to 12 trends being plotted
-    val colorPalette = List[String]("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
-      "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a",
-      "#ffff99", "#b15928")
+    // we'll assume we have up to 9 trends being plotted
+    val colorPalette = List[String]("#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999")
 
-    val smiColMap = smiles.zip(colorPalette).toMap
+    val smiColMap = smiles.zip(colorPalette.take(smiles.size).reverse).toMap
 
     val chembl = new ChemblQueries(db)
     val trendData = smiles.map { s =>
