@@ -1,21 +1,23 @@
 package controllers
 
 /**
-  * SMILES entry form.
+  * SMILES/trend property entry form.
   *
   * Taken from https://github.com/playframework/play-scala-forms-example/blob/2.6.x/app/controllers/WidgetForm.scala
   *
   * @author Rajarshi Guha
   */
-object SmilesForm {
+object TrendForm {
 
   import play.api.data.Form
   import play.api.data.Forms._
 
-  case class Data(smiles: String)
+  case class Data(smiles: String, property: String)
 
   val form = Form(
-    mapping("smiles" -> nonEmptyText)(Data.apply)(Data.unapply)
+    mapping(
+      "smiles" -> nonEmptyText,
+      "property" -> text)(Data.apply)(Data.unapply)
   )
 
 }

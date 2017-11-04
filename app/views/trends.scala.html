@@ -1,8 +1,17 @@
-@(form: Form[SmilesForm.Data],
-        postUrl: Call,
-        smiles: Seq[String],
-        smiColMap: Map[String, String],
+@(form: Form[TrendForm.Data], postUrl: Call, property: String, smiles: Seq[String], smiColMap: Map[String, String],
         trendData: Map[String, Map[Int, Int]])(implicit request: MessagesRequestHeader)
+
+
+@getYaxisLabel(s: String) = @{
+    s match {
+        case "compounds" => "Unique Compound Count"
+        case "assays" => "Tested Bioassays"
+        case "jifs" => "Median JIF Rank"
+        case "beauty" => "Molecular Beauty"
+        case "3dness" => "3dness"
+        case "complexity" => "Molecular Complexity"
+    }
+}
 
 @main("Scaffold Trend Explorer") {
 
@@ -10,6 +19,14 @@
         @helper.form(postUrl) {
             @helper.CSRF.formField
             @helper.inputText(form("smiles"))
+            @helper.select(form("property"),
+                options = Seq(
+                    "compounds" -> "Compounds",
+                    "assays" -> "Assays"
+                ),
+                '_selected -> "Compounds",
+                '_label -> "Trend"
+            )
             <button>Search</button>
         }
         @*<form class="form-inline"role="search" method="GET" action="@controllers.routes.Application.search(null)">*@
@@ -53,7 +70,7 @@
                 var myChart = new Highcharts.Chart({
                     chart: {
                         renderTo: 'plotDiv',
-                        type: 'line',
+                        type: 'line'
                     },
                     title: {
                         text: null
@@ -61,6 +78,11 @@
                     xAxis: {
                         title: {
                             text: ''
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: '@getYaxisLabel(property)'
                         }
                     },
                     series: [

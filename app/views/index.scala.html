@@ -1,4 +1,6 @@
-@(form: Form[SmilesForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+
+
+@(form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
 
 @main("Scaffold Trend Explorer") {
 
@@ -13,6 +15,14 @@
         @helper.form(postUrl) {
             @helper.CSRF.formField
             @helper.inputText(form("smiles"))
+            @helper.select(form("property"),
+                options = Seq(
+                    "compounds" -> "Compounds",
+                    "assays" -> "Assays"
+                ),
+                '_selected -> "Compounds",
+                '_label -> "Trend"
+            )
             <button>Search</button>
         }
     </div>
