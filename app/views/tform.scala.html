@@ -1,12 +1,12 @@
-@(form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+@(form: Form[TrendForm.Data], postUrl: Call, property: String)(implicit request: MessagesRequestHeader)
 
 @helper.form(postUrl, 'class -> "form-inline") {
     <div class="form-group">
         @helper.CSRF.formField
         <input type="text" placeholder="Enter a SMILES string" size="45" id='@form("smiles").name' name='@form("smiles").name'>
         <select id='@form("property").name' name='@form("property").name'>
-            <option value="compounds" selected>Compounds</option>
-            <option value="assays">Assays</option>
+            <option value="compounds" @if(property.equals("compounds")){ selected }>Compounds</option>
+            <option value="assays" @if(property.equals("assays")){ selected }>Assays</option>
         </select>
         <button>Search</button>
     </div>
