@@ -1,17 +1,13 @@
+@(form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
 
-@(form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader) {
-
-    @helper.form(postUrl) {
+@helper.form(postUrl, 'class -> "form-inline") {
+    <div class="form-group">
         @helper.CSRF.formField
-        @helper.inputText(form("smiles"), '_placeholder -> "Enter a SMILES string")
-        @helper.select(form("property"),
-            options = Seq(
-                "compounds" -> "Compounds",
-                "assays" -> "Assays"
-            ),
-            '_selected -> "Compounds",
-            '_label -> "Trend"
-        )
+        <input type="text" placeholder="Enter a SMILES string" size="45" id='@form("smiles").name' name='@form("smiles").name'>
+        <select id='@form("property").name' name='@form("property").name'>
+            <option value="compounds" selected>Compounds</option>
+            <option value="assays">Assays</option>
+        </select>
         <button>Search</button>
-    }
+    </div>
 }
