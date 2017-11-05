@@ -57,13 +57,17 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
     val chembl = new ChemblQueries(db)
     val trendData = smiles.map { s =>
       Map(s -> {
-        cache.getOrElseUpdate[Map[Int, Int]](s + "$" + property) {
+        val key = s + "$" + property
+        val value = cache.get[Map[Int, Int]](key)
+        value.getOrElse({
           Logger.info("Adding " + s + "/" + property + " to cache")
-          property match {
+          val v = property match {
             case "compounds" => chembl.compoundCounts(s)
             case "assays" => chembl.assayCounts(s)
           }
-        }
+          cache.set(key, v)
+          v
+        })
       })
     }
     Ok(views.html.trends(TrendForm.form, routes.Application.search(), property, smiles, smiColMap, trendData.flatten.toMap))
