@@ -1,5 +1,6 @@
 package controllers
 
+import java.util.UUID
 import javax.inject._
 
 import play.api.cache.SyncCacheApi
@@ -14,13 +15,21 @@ import scala.collection.mutable.ListBuffer
 class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesControllerComponents, config: Configuration)
   extends MessagesAbstractController(cc) with I18nSupport {
 
+  // allows us to track the SMILES being specified
+  val SESSION_UUID_KEY = "STE_UUID"
+
   val APP_VERSION = config.get[String]("ste.application.version")
 
-  private val smilesList = ListBuffer[String]()
-
   def index = Action { implicit request =>
-    smilesList.clear()
-    Ok(views.html.index(TrendForm.form, routes.Application.search()))
+    // on loading the main page we start fresh, so: first, remove smiles list from cache
+    request.session.get(SESSION_UUID_KEY) match {
+      case Some(x) => cache.remove(x)
+      case None => {} // nothing to do if we have no session key
+    }
+    // generate new UUID and set it in the session
+    Ok(views.html.index(TrendForm.form, routes.Application.search())).withSession(
+      request.session + (SESSION_UUID_KEY -> UUID.randomUUID().toString)
+    )
   }
 
   def about = Action {
@@ -28,6 +37,9 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
   }
 
   def search = Action { implicit request =>
+    val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
+    val smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
+
     TrendForm.form.bindFromRequest.fold(
       formWithErrors => {
         BadRequest(views.html.about())
@@ -40,6 +52,7 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
           }
           case _ => {
             smilesList += data.smiles
+            cache.set(uuid, smilesList)
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }
         }
