@@ -10,7 +10,7 @@ import play.api.{Configuration, Logger}
 
 import scala.collection.mutable.ListBuffer
 
-@Singleton
+
 class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesControllerComponents, config: Configuration)
   extends MessagesAbstractController(cc) with I18nSupport {
 
