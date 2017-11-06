@@ -23,23 +23,19 @@
         <div class="row" style="padding: 1em;">
         @for(s <- smiles) {
             <div class="col-md-2">
-                <div class="card" id="card-@s">
-                    <div class="card-block ">
-                        <img class="btn"
-                        src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
-                        alt="@s" style="border-width: 5px;
-                            border-color:
-                        @smiColMap(s);">
+                <img class="btn"
+                src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
+                alt="@s" style="border-width: 5px;
+                    border-color:
+                @smiColMap(s);">
 
-                        <br>
-                        <a href="/ste/delete?smiles=@s" class="card-link text-muted">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </a>
-                        <a href="/ste/download?smiles=@s" class="card-link text-muted">
-                            <i class="fa fa-download" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
+                <br>
+                <a href="/ste/delete?smiles=@s" class="card-link text-muted">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+                <a href="/ste/download?smiles=@s" class="card-link text-muted">
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                </a>
             </div>
         }
         </div>
