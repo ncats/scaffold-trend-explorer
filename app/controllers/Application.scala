@@ -36,6 +36,14 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
     Ok(views.html.about())
   }
 
+  def delete(smiles: String) = Action { implicit request =>
+    val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
+    var smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
+    smilesList = smilesList.filter(!_.equals(smiles))
+    cache.set(uuid, smilesList)
+    Redirect(routes.Application.displayTrends(smilesList, "compounds"))
+  }
+
   def search = Action { implicit request =>
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     val smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
