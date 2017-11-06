@@ -1,27 +1,27 @@
-
-
 @(form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
 
 @main("Scaffold Trend Explorer") {
 
-
-    <div class="row">
-        <div class="col-1">
-            Some blurb about the app
+    <div class="container vertical-center" id="main-box">
+        <div class="row">
+            <div class="col-1">
+                Some blurb about the app
+            </div>
         </div>
-    </div>
 
-    <div class="row">
+        <div class="row">
         @tform(form, postUrl, "compounds")
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8" id="plotDiv">
-
         </div>
-        <div class="col-lg-4" id="controlDiv">
 
+        <div class="row">
+            <div class="col-lg-8" id="plotDiv">
+
+            </div>
+            <div class="col-lg-4" id="controlDiv">
+
+            </div>
         </div>
+
     </div>
 
 }

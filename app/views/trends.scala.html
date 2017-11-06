@@ -15,49 +15,41 @@
 
 @main("Scaffold Trend Explorer") {
 
-    <div class="row">
+    <div class="container vertical-center" id="main-box">
+        <div class="row">
         @tform(form, postUrl, property)
+        </div>
 
-        @*<form class="form-inline"role="search" method="GET" action="@controllers.routes.Application.search(null)">*@
-        @*<div class=" form-group">*@
-        @*<input type="text" class="form-control"*@
-        @*id="smilesTextField" aria-describedby="smilesHelp" placeholder="Enter SMILES">*@
-        @*<button type="button" class="btn btn-info" id="structureSearchDialog">*@
-        @*<i class="fa fa-cog fa-fw" aria-hidden="true"></i>*@
-        @*</button>*@
-        @*<button type="submit" class="btn btn-primary">Search</button>*@
-        @*</div>*@
-        @*</form>*@
-    </div>
+        <div class="row" style="padding: 1em;">
+        @for(s <- smiles) {
+            <div class="col-md-2">
+                <div class="card" id="card-@s">
+                    <img class="card-img-top btn"
+                    src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
+                    alt="@s" style="border-width: 5px;
+                        border-color:
+                    @smiColMap(s);">
+                    <div class="card-block"></div>
+                </div>
+            </div>
+        }
+        </div>
+        <div class="row" style="padding: 1em;">
+            <div class="col-lg-8" id="plotDiv">
 
-    <div class="row" style="padding: 1em;">
-    @for(s <- smiles) {
-        <div class="col-md-2">
-            <div class="card" id="card-@s">
-                <img class="card-img-top btn"
-                src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
-                alt="@s" style="border-width: 5px;
-                    border-color:
-                @smiColMap(s);">
-                <div class="card-block"></div>
+            </div>
+            <div class="col-lg-4" id="controlDiv">
+
             </div>
         </div>
-    }
-    </div>
-    <div class="row" style="padding: 1em;">
-        <div class="col-lg-8" id="plotDiv">
 
-        </div>
-        <div class="col-lg-4" id="controlDiv">
-
-        </div>
     </div>
 
     <script type="text/javascript">
 
             $(function () {
                 var myChart = new Highcharts.Chart({
-                    credits:false,
+                    credits: false,
                     chart: {
                         renderTo: 'plotDiv',
                         type: 'line'

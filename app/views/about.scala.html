@@ -1,3 +1,48 @@
 @main("Scaffold Trend Explorer") {
-    Here will be some text about the application
+    <div class="container vertical-center" id="main-box">
+
+        <div class="col-md-12">
+
+            <div class="page-header">
+                <h1>About the Scaffold Trend Explorer</h1>
+            </div>
+
+            <div class="row">
+                <p>Scaffolds are a core concept in medicinal chemistry and they can be the focus of multiple
+                    independent development efforts, over an extended period. Thus, scaffold associated
+                    properties can vary over time, possibly showing consistently increasing or decreasing trends.
+                    We posit that such trends characterize the attention that the community pays to a scaffold.</p>
+                <p>This application allows you to query <a href="https://www.ebi.ac.uk/chembl/">ChEMBL</a>
+                    for a scaffold (represented as a SMILES) and visualize properties of the compounds containing
+                    the scaffold over time. This functionality is analogous to
+                    <a href="https://trends.google.com/trends/">Google Trends</a>.</p>
+                <p>Currently the properties considered are</p>
+                <ul>
+                    <li>Unique compound counts</li>
+                    <li>Tested assay count</li>
+                    <li>Median bioassay activity</li>
+                </ul>
+                <p>As you might expect, very small or commonly occuring scaffolds can result in long
+                    query times. We currently employ some simple heuristics to avoid querying for such
+                    cases.</p>
+
+                <p>For feedback and comments, please contact
+                    <a href="mailto:guhar@@mail.nih.gov"><code>guhar@@mail.nih.gov</code></a>
+                </p>
+
+                <p class="lead">How can I cite this application?</p>
+                <p>If you find this application useful, consider citing
+            <blockquote class="blockquote">
+                Zdrazil, B. and Guha, R., <i>J. Med. Chem.</i>, <b>2007</b>, submitted
+            </blockquote></p>
+
+                <p class="lead">Frequently Asked Questions</p>
+                <dl>
+                    <dt>How is bioassay activity calculated?</dt>
+                    <dd>Foo</dd>
+                </dl>
+
+            </div>
+        </div>
+    </div>
 }
