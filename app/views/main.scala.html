@@ -1,4 +1,4 @@
-@(app: controllers.Application, title: String)(content: Html)
+@(app: controllers.Application, title: String)(menu: Html)(content: Html)
 
 <!DOCTYPE html>
 
@@ -21,7 +21,7 @@
 
     </head>
     <body>
-        @menu()
+        @menu
     <div class="content">
         @content
         <!-- @footer() -->
