@@ -47,6 +47,18 @@ class Application @Inject()(cache: SyncCacheApi,
     Redirect(routes.Application.displayTrends(smilesList, "compounds"))
   }
 
+  def download(smiles: String, property: String) = Action { implicit request =>
+    val data: Map[Int, Int] = cache.get(smiles + "$" + property).get
+    val builder = new StringBuilder
+    builder ++= s"#$smiles\n#$property\nYear,Count\n"
+    for ((k, v) <- data) builder ++= k + "," + v + "\n"
+
+    Ok(builder.toString)
+      .withHeaders(
+        CONTENT_TYPE -> "text/csv",
+        CONTENT_DISPOSITION -> s"attachment; filename=ste-$smiles-$property.csv")
+  }
+
   def search = Action { implicit request =>
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     val smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
