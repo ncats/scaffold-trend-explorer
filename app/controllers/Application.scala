@@ -12,7 +12,10 @@ import play.api.{Configuration, Logger}
 import scala.collection.mutable.ListBuffer
 
 
-class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesControllerComponents, config: Configuration)
+class Application @Inject()(cache: SyncCacheApi,
+                            db: Database,
+                            cc: MessagesControllerComponents,
+                            config: Configuration)
   extends MessagesAbstractController(cc) with I18nSupport {
 
   // allows us to track the SMILES being specified
@@ -27,13 +30,13 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
       case None => {} // nothing to do if we have no session key
     }
     // generate new UUID and set it in the session
-    Ok(views.html.index(TrendForm.form, routes.Application.search())).withSession(
+    Ok(views.html.index(this, TrendForm.form, routes.Application.search())).withSession(
       request.session + (SESSION_UUID_KEY -> UUID.randomUUID().toString)
     )
   }
 
   def about = Action {
-    Ok(views.html.about())
+    Ok(views.html.about(this))
   }
 
   def delete(smiles: String) = Action { implicit request =>
@@ -50,11 +53,11 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
 
     TrendForm.form.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.about())
+        BadRequest(views.html.about(this))
       },
       data => {
         data.smiles match {
-          case "" if smilesList.isEmpty => BadRequest(views.html.about())
+          case "" if smilesList.isEmpty => BadRequest(views.html.about(this))
           case "" if smilesList.nonEmpty => {
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }
@@ -91,6 +94,6 @@ class Application @Inject()(cache: SyncCacheApi, db: Database, cc: MessagesContr
         })
       })
     }
-    Ok(views.html.trends(TrendForm.form, routes.Application.search(), property, smiles, smiColMap, trendData.flatten.toMap))
+    Ok(views.html.trends(this, TrendForm.form, routes.Application.search(), property, smiles, smiColMap, trendData.flatten.toMap))
   }
 }

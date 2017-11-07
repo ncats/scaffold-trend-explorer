@@ -1,10 +1,12 @@
-@main("Scaffold Trend Explorer") {
+@(app: controllers.Application)
+
+@main(app, "Scaffold Trend Explorer") {
     <div class="container vertical-center" id="main-box">
 
         <div class="col-md-12">
 
             <div class="page-header">
-                <h1>About the Scaffold Trend Explorer</h1>
+                <h1>About the Scaffold Trend Explorer (v@app.APP_VERSION)</h1>
             </div>
 
             <div class="row">
