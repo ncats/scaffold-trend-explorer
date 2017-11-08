@@ -11,6 +11,24 @@ import play.api.db.Database
   */
 class ChemblQueries @Inject()(db: Database) extends EntityHelper {
 
+  def medianQED(smi: String): Map[Int, Int] = {
+    if (smi.isEmpty) None
+    db.withConnection { conn =>
+      val pst = conn.prepareStatement("select docs.year, median(desc_value) as qed " +
+        "from  " +
+        "activities act, docs, ste_descriptors sted " +
+        "where rdmol_smiles@>'" + smi + "' " +
+        "and sted.molregno = act.molregno " +
+        "and sted.desc_name = 'qed' " +
+        "and act.doc_id = docs.doc_id " +
+        "and docs.year is not null " +
+        "group by year " +
+        "order by year")
+      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getInt(2)))
+      riter.toList.flatten.toMap
+    }
+  }
+
   def compoundCounts(smi: String): Map[Int, Int] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>

@@ -23,18 +23,23 @@ def compute_qed(con):
     nmol = 0
     for molregno,smi in cursor:
         nmol += 1
-        if smi is None: next
+        if smi is None:
+            next
 
-        m = Chem.MolFromSmiles(smi)
-        batch.append((molregno, "qed", qed(m)))
-        i += 1
-        if i == batch_size:
-            psycopg2.extras.execute_values(icursor, insertsql, batch,
-                                               template=None, page_size=100)
-            batch = []
-            i = 0
-        if nmol % 50 == 0:
-            sys.stdout.write("\rProcessed %d" % (nmol))
+        try:
+            m = Chem.MolFromSmiles(smi)
+            batch.append((molregno, "qed", qed(m)))
+            i += 1
+            if i == batch_size:
+                psycopg2.extras.execute_values(icursor, insertsql, batch,
+                                                   template=None, page_size=100)
+                batch = []
+                i = 0
+            if nmol % 50 == 0:
+                sys.stdout.write("\rProcessed %d" % (nmol))
+                sys.stdout.flush()
+        except:
+            sys.stdout.write("\nSkipping %d\n" % (molregno))
             sys.stdout.flush()
 
 if __name__ == '__main__':

@@ -100,6 +100,7 @@ class Application @Inject()(cache: SyncCacheApi,
           val v = property match {
             case "compounds" => chembl.compoundCounts(s)
             case "assays" => chembl.assayCounts(s)
+            case "qed" => chembl.medianQED(s)
           }
           cache.set(key, v)
           v
