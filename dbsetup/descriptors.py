@@ -1,0 +1,46 @@
+from rdkit.Chem import rdBase, RDConfig
+from rdkit import Chem
+from rdkit.Chem.Descriptors import qed
+
+import sys
+import psycopg2
+import psycopg2.extras
+
+
+molsql = "select molregno, rdmol_smiles from compound_structures"
+insertsql = "insert into ste_descriptors (molregno, desc_name, desc_value) values %s"
+
+
+def compute_qed(con):
+    cursor = con.cursor('cursor_unique_name',
+                            cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute(molsql)
+
+    icursor = con.cursor() ## for inserts
+    batch_size = 100
+    batch = []
+    i = 0
+    nmol = 0
+    for molregno,smi in cursor:
+        nmol += 1
+        if smi is None: next
+
+        m = Chem.MolFromSmiles(smi)
+        batch.append((molregno, "qed", qed(m)))
+        i += 1
+        if i == batch_size:
+            psycopg2.extras.execute_values(icursor, insertsql, batch,
+                                               template=None, page_size=100)
+            batch = []
+            i = 0
+        if nmol % 50 == 0:
+            sys.stdout.write("\rProcessed %d" % (nmol))
+            sys.stdout.flush()
+
+if __name__ == '__main__':
+    con = psycopg2.connect("dbname='chembl_23' user='guhar' host='ifxdev.ncats.nih.gov' password='ChemblRD23'")
+    compute_qed(con)
+    
+    con.commit()
+    con.close()
+    print
