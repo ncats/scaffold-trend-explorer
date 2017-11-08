@@ -11,25 +11,26 @@ import play.api.db.Database
   */
 class ChemblQueries @Inject()(db: Database) extends EntityHelper {
 
-  def medianQED(smi: String): Map[Int, Int] = {
+  def medianQED(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
       val pst = conn.prepareStatement("select docs.year, median(desc_value) as qed " +
-        "from  " +
+        "from  compound_structures cs, " +
         "activities act, docs, ste_descriptors sted " +
         "where rdmol_smiles@>'" + smi + "' " +
-        "and sted.molregno = act.molregno " +
+        "and cs.molregno = act.molregno " +
+        "and cs.molregno = sted.molregno " +
         "and sted.desc_name = 'qed' " +
         "and act.doc_id = docs.doc_id " +
         "and docs.year is not null " +
         "group by year " +
         "order by year")
-      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getInt(2)))
+      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
       riter.toList.flatten.toMap
     }
   }
 
-  def compoundCounts(smi: String): Map[Int, Int] = {
+  def compoundCounts(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
       val pst = conn.prepareStatement("select docs.year, count(cs.molregno) as nmol " +
@@ -42,12 +43,12 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
         "and docs.year is not null " +
         "group by year " +
         "order by year")
-      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getInt(2)))
+      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
       riter.toList.flatten.toMap
     }
   }
 
-  def assayCounts(smi: String): Map[Int, Int] = {
+  def assayCounts(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
 
     db.withConnection { conn =>
@@ -60,7 +61,7 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
         "and docs.year is not null " +
         "group by year " +
         "order by year;")
-      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getInt(2)))
+      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
       riter.toList.flatten.toMap
     }
 

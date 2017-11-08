@@ -94,7 +94,7 @@ class Application @Inject()(cache: SyncCacheApi,
     val trendData = smiles.map { s =>
       Map(s -> {
         val key = s + "$" + property
-        val value = cache.get[Map[Int, Int]](key)
+        val value = cache.get[Map[Int, Double]](key)
         value.getOrElse({
           Logger.info("Adding " + s + "/" + property + " to cache")
           val v = property match {

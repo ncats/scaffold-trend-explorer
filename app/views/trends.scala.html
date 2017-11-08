@@ -1,6 +1,6 @@
 @(app: controllers.Application, form: Form[TrendForm.Data], postUrl: Call,
         property: String, smiles: Seq[String], smiColMap: Map[String, String],
-        trendData: Map[String, Map[Int, Int]])(implicit request: MessagesRequestHeader)
+        trendData: Map[String, Map[Int, Double]])(implicit request: MessagesRequestHeader)
 
 
 @getYaxisLabel(s: String) = @{
