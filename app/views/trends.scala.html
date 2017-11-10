@@ -3,97 +3,114 @@
         trendData: Map[String, Map[Int, Double]])(implicit request: MessagesRequestHeader)
 
 
-@getYaxisLabel(s: String) = @{
-    s match {
-        case "compounds" => "Unique Compound Count"
-        case "assays" => "Tested Bioassays"
-        case "jifs" => "Median JIF Rank"
-        case "qed" => "Chemical Beauty"
-        case "3dness" => "3dness"
-        case "complexity" => "Molecular Complexity"
-    }
-}
-
-@main(app, "Scaffold Trend Explorer") {
-    @menu(property)
-} {
-
-    <div class="container vertical-center" id="main-box">
-        <div class="row">
-        @tform(form, postUrl, property)
-        </div>
-
-        <div class="row" style="padding: 1em;">
-        @for(s <- smiles) {
-            <div class="col-md-2">
-                <img class="btn"
-                src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
-                alt="@s" style="border-width: 5px;
-                    border-color:
-                @smiColMap(s);">
-
-                <br>
-                <a href="/ste/delete?smiles=@s" class="card-link text-muted">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                </a>
-                <a href="/ste/download?smiles=@s&property=@property" class="card-link text-muted">
-                    <i class="fa fa-download" aria-hidden="true"></i>
-                </a>
-            </div>
+    @getYaxisLabel(s: String) = @{
+        s match {
+            case "compounds" => "Unique Compound Count"
+            case "assays" => "Tested Bioassays"
+            case "jifs" => "Median JIF Rank"
+            case "qed" => "Chemical Beauty"
+            case "3dness" => "3dness"
+            case "complexity" => "Molecular Complexity"
         }
-        </div>
-        <div class="row" style="padding: 1em;">
-            <div class="col-lg-8" id="plotDiv">
+    }
 
+    @main(app, "Scaffold Trend Explorer") {
+        @menu(property)
+    } {
+
+        <div class="container vertical-center" id="main-box">
+            <div class="row">
+            @tform(form, postUrl, property)
             </div>
-            <div class="col-lg-4" id="controlDiv">
 
+            <div class="row" style="padding: 1em;">
+            @for(s <- smiles) {
+                <div class="col-md-2">
+                    <img class="btn"
+                    src="https://tripod.nih.gov/servlet/renderServletv12/?structure=@s&size=75&format=svg"
+                    alt="@s" style="border-width: 5px;
+                        border-color:
+                    @smiColMap(s);">
+
+                    <br>
+                    <a href="@controllers.routes.Application.delete(s)" class="card-link text-muted">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                    <a href="@controllers.routes.Application.download(smiles, property)" class="card-link text-muted">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                    </a>
+                </div>
+            }
             </div>
+            <div class="row" style="padding: 1em;">
+                <div class="col-lg-8" id="plotDiv">
+
+                </div>
+                <div class="col-lg-4" id="controlDiv">
+
+                </div>
+            </div>
+
         </div>
 
-    </div>
+        <script type="text/javascript">
 
-    <script type="text/javascript">
+                function displayCompounds(smi, year, prop, elem) {
+                   $.get({
+                       url:""
+                   })
+                }
 
-            $(function () {
-                var myChart = new Highcharts.Chart({
-                    credits: false,
-                    chart: {
-                        renderTo: 'plotDiv',
-                        type: 'line'
-                    },
-                    title: {
-                        text: null
-                    },
-                    xAxis: {
-                        title: {
-                            text: ''
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: '@getYaxisLabel(property)'
-                        }
-                    },
-                    tooltip: {
-                        valueSuffix: '',
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                        shared: true
-                    },
-                    series: [
-                        @for( (smi,cmap) <- trendData ) {
-                        {
-                            name: '@smi',
-                            showInLegend: false,
-                            color: '@smiColMap(smi)',
-                            data: [
-                                @for( (x,y) <- cmap.toList.sortWith(_._1 < _._1) ) { [@x, @y], }
-                            ]
+                $(function () {
+                    var myChart = new Highcharts.Chart({
+                        credits: false,
+                        chart: {
+                            renderTo: 'plotDiv',
+                            type: 'line'
                         },
-                        }
-                    ]
+                        plotOptions: {
+                            series: {
+                                point: {
+                                    events: {
+                                        click: function (e) {
+                                            displayCompounds(this.series.name, this.x, "@property", "#controlDiv");
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        title: {
+                            text: null
+                        },
+                        xAxis: {
+                            title: {
+                                text: ''
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: '@getYaxisLabel(property)'
+                            }
+                        },
+                        tooltip: {
+                            valueSuffix: '',
+                            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                            shared: true
+                        },
+                        series: [
+                            @for( (smi,cmap) <- trendData ) {
+                            {
+                                name: '@smi',
+                                showInLegend: false,
+                                color: '@smiColMap(smi)',
+                                data: [
+                                    @for( (x,y) <- cmap.toList.sortWith(_._1 < _._1) ) { [@x, @y], }
+                                ]
+                            },
+                            }
+                        ]
+                    });
                 });
-            });
-    </script>
+        </script>
 
-}
+    }
