@@ -102,6 +102,7 @@ class Application @Inject()(cache: SyncCacheApi,
             case "assays" => chembl.assayCounts(s)
             case "qed" => chembl.medianQED(s)
             case "logS" => chembl.medianSolubility(s)
+            case "Fsp3" => chembl.medianFsp3(s)
           }
           cache.set(key, v)
           v
