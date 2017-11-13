@@ -48,7 +48,7 @@ class Application @Inject()(cache: SyncCacheApi,
   }
 
   def download(smiles: String, property: String) = Action { implicit request =>
-    val data: Map[Int, Int] = cache.get(smiles + "$" + property).get
+    val data: Map[Int, Double] = cache.get(smiles + "$" + property).get
     val builder = new StringBuilder
     builder ++= s"#$smiles\n#$property\nYear,Count\n"
     for ((k, v) <- data) builder ++= k + "," + v + "\n"
