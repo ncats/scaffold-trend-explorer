@@ -17,8 +17,6 @@
                 MarvinJSUtil.getPackage("sketch").then(function (marvinNameSpace) {
                     marvinNameSpace.onReady(function () {
                         marvin = marvinNameSpace;
-                        console.log("Foo");
-                        //exportSmiles();
                     });
                 }, function () {
                     alert("Cannot retrieve marvin instance from iframe");
@@ -32,19 +30,25 @@
                 });
 
                 var editorControl = (function () {
-
                     var controlObject = {
                         "open": function openEditor() {
                         }, "close": function closeEditor() {
                             if (marvinSketcherInstance != null) {
-                                marvinSketcherInstance.exportStructure("smiles").then(function (s) {
-                                    $("#smiles").val(s);
-                                }, function (error) {
-                                    alert(error);
-                                    console.log(error);
+                                var mol = marvinSketcherInstance.exportAsMol();
+                                $.ajax({
+                                    url: "@controllers.routes.Application.molconvert",
+                                    type: "POST",
+                                    dataType: "json",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({
+                                        "structure": mol,
+                                        "inputFormat": "mol",
+                                        "parameters": "smiles"
+                                    })
+                                }).done(function (data, textStatus, jqXHR) {
+                                    $("#smiles").val(data['structure']);
                                 });
                             }
-                            console.log("Closing")
                             $("#popup").css("visibility", "hidden");
                             $("#popup").css("opacity", 0);
                         }

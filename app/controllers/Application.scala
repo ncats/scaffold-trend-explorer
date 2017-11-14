@@ -3,9 +3,11 @@ package controllers
 import java.util.UUID
 import javax.inject._
 
+import chemaxon.util.MolHandler
 import play.api.cache.SyncCacheApi
 import play.api.db.Database
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.{Configuration, Logger}
 
@@ -37,6 +39,20 @@ class Application @Inject()(cache: SyncCacheApi,
 
   def marvin = Action {
     Ok(views.html.marvin())
+  }
+
+  def molconvert = Action(parse.json) { request =>
+    val json = request.body
+    val mol = (json \ "structure").as[String]
+    val format = (json \ "parameters").as[String]
+    val mh: MolHandler = new MolHandler(mol)
+    val out = mh.getMolecule.toFormat(format)
+    val outJson = Json.obj(
+      "structure" -> out,
+      "format" -> format,
+      "contentUrl" -> ""
+    )
+    Ok(outJson).as("application/json")
   }
 
   def about = Action {

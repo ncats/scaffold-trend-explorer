@@ -3,18 +3,22 @@
 # ~~~~
 
 # Home page
-GET        /                                    controllers.Application.index
-GET        /about                               controllers.Application.about
-GET        /search                              controllers.Application.search
-GET        /marvin                              controllers.Application.marvin
-GET        /delete                              controllers.Application.delete(smiles: String)
-GET        /download                            controllers.Application.download(smiles: String, property: String)
-GET        /trends                              controllers.Application.displayTrends(smiles: Seq[String], property: String)
-GET        /api/v1/compounds/:smi/counts        controllers.Compound.counts(smi: String)
-GET        /api/v1/compounds/:smi/raw           controllers.Compound.raw(smi: String)
-GET        /api/v1/assays/:smi/counts           controllers.Assay.counts(smi: String)
-GET        /api/v1/assays/:smi/raw              controllers.Assay.raw(smi: String)
+GET         /                                    controllers.Application.index
+GET         /about                               controllers.Application.about
+GET         /search                              controllers.Application.search
+GET         /marvin                              controllers.Application.marvin
+
++ nocsrf
+POST        /molconvert                          controllers.Application.molconvert
+
+GET         /delete                              controllers.Application.delete(smiles: String)
+GET         /download                            controllers.Application.download(smiles: String, property: String)
+GET         /trends                              controllers.Application.displayTrends(smiles: Seq[String], property: String)
+GET         /api/v1/compounds/:smi/counts        controllers.Compound.counts(smi: String)
+GET         /api/v1/compounds/:smi/raw           controllers.Compound.raw(smi: String)
+GET         /api/v1/assays/:smi/counts           controllers.Assay.counts(smi: String)
+GET         /api/v1/assays/:smi/raw              controllers.Assay.raw(smi: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file                        controllers.Assets.versioned(path="/public", file)
-->         /webjars                             webjars.Routes
+GET         /assets/*file                        controllers.Assets.versioned(path="/public", file)
+->          /webjars                             webjars.Routes

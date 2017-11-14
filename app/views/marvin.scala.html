@@ -24,7 +24,9 @@
         if (marvin.Sketch.isSupported()) {
             marvin.Sketch.license('@routes.Assets.versioned("marvinjs-license.cxl")');
             marvin.sketcherInstance = new marvin.Sketch("sketch");
-            //marvin.sketcherInstance.setServices(getDefaultServices());
+            marvin.sketcherInstance.setServices({
+                "molconvertws": '@controllers.routes.Application.molconvert'
+            });
 
             //top.sketcher = marvin.sketcherInstance;
             var molchange = function () {
