@@ -60,11 +60,12 @@ class Application @Inject()(cache: SyncCacheApi,
   }
 
   def delete(smiles: String) = Action { implicit request =>
+    val property = request.queryString("property").head
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     var smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
     smilesList = smilesList.filter(!_.equals(smiles))
     cache.set(uuid, smilesList)
-    Redirect(routes.Application.displayTrends(smilesList, "compounds"))
+    Redirect(routes.Application.displayTrends(smilesList, property))
   }
 
   def download(smiles: String, property: String) = Action { implicit request =>
