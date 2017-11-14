@@ -1,19 +1,93 @@
 @(form: Form[TrendForm.Data], postUrl: Call, property: String)(implicit request: MessagesRequestHeader)
 
-@helper.form(postUrl, 'class -> "form-inline") {
-    <div class="col-1" style="padding-top: 2em;
-        padding-bottom: 0.5em;">
-        <div class="form-group">
-            @helper.CSRF.formField
-            <input type="text" placeholder="Enter a SMILES string" size="45" id='@form("smiles").name' name='@form("smiles").name'>
-            <select id='@form("property").name' name='@form("property").name'>
-                <option value="compounds" @if(property.equals("compounds")) { selected }>Compounds</option>
-                <option value="assays" @if(property.equals("assays")) { selected }>Assays</option>
-                <option value="logS" @if(property.equals("logS")) { selected }>Solubility</option>
-                <option value="Fsp3" @if(property.equals("Fsp3")) { selected }>Fsp3</option>
-                <option value="qed" @if(property.equals("qed")) { selected }>Chemical Beauty</option>
-            </select>
-            <button>Search</button>
+<head>
+    <script src='@routes.Assets.versioned("javascripts/marvin/js/marvinjslauncher.js")'></script>
+    <script src='@routes.Assets.versioned("javascripts/marvin/js/webservices.js")'></script>
+    @*<script src="javascripts/marvin/gui/lib/promise-1.0.0.min.js"></script>*@
+    @*<script src="javascripts/marvin/js/marvinjslauncher.js"></script>*@
+    @*<script src="javascripts/marvin/js/webservices.js"></script>*@
+    <script type="text/javascript">
+            var marvin;
+            var marvinSketcherInstance;
+
+            $(document).ready(function () {
+
+                $("#close").bind("click", function () {
+                    editorControl.close();
+                });
+
+                MarvinJSUtil.getPackage("sketch").then(function (marvinNameSpace) {
+                    marvinNameSpace.onReady(function () {
+                        marvin = marvinNameSpace;
+                        //exportSmiles();
+                    });
+                }, function () {
+                    alert("Cannot retrieve marvin instance from iframe");
+                });
+
+                MarvinJSUtil.getEditor("sketch").then(function (sketcherInstance) {
+                    marvinSketcherInstance = sketcherInstance;
+                    // open editor if any image is selected
+                    editorControl.open();
+                }, function () {
+                    alert("Cannot retrieve sketcher instance from iframe");
+                });
+
+                var editorControl = (function () {
+
+                    var currentPict = null;
+
+                    var controlObject = {
+                        "open": function openEditor() {
+                            $("#popup").css("visibility", "visible");
+                            $("#popup").css("opacity", 1);
+                        }
+                        , "close": function closeEditor() {
+                            if (marvinSketcherInstance != null) {
+                                marvinSketcherInstance.exportStructure("smiles").then(function (s) {
+                                    $("#smiles").val(s);
+                                }, function (error) {
+                                    alert(error);
+                                });
+                            }
+                            $("#popup").css("visibility", "hidden");
+                            $("#popup").css("opacity", 0);
+                        }
+                    };
+                    return controlObject;
+                }());
+
+                $("#showSketcher").on("click", editorControl.open());
+            });
+
+    </script>
+</head>
+
+<div id="popup" class="popup-window" style="position: fixed;  z-index:100;  visibility: hidden; opacity: 0;">
+    <div class="wrapper">
+        <div id="title-bar"><input id="close" type="button" class="close-button" value="Done ×"></div>
+        <div id="sketchContainer">
+            <iframe class="sketcher-frame" id="sketch" src="@controllers.routes.Application.marvin()" ></iframe>
         </div>
     </div>
-}
+</div>
+
+    @helper.form(postUrl, 'class -> "form-inline") {
+        <div class="col-1" style="padding-top: 2em;
+            padding-bottom: 0.5em;">
+            <div class="form-group">
+                @helper.CSRF.formField
+                <input type="text" placeholder="Enter a SMILES string" size="45" id='@form("smiles").name' name='@form("smiles").name'>
+                <a id="showSketcher" class="btn btn-primary">Draw</a>
+                <select id='@form("property").name' name='@form("property").name'>
+                    <option value="compounds" @if(property.equals("compounds")) { selected }>Compounds</option>
+                    <option value="assays" @if(property.equals("assays")) { selected }>Assays</option>
+                    <option value="logS" @if(property.equals("logS")) { selected }>Solubility</option>
+                    <option value="Fsp3" @if(property.equals("Fsp3")) { selected }>Fsp3</option>
+                    <option value="qed" @if(property.equals("qed")) { selected }>Chemical Beauty</option>
+                </select>
+                <button>Search</button>
+            </div>
+        </div>
+    }
+

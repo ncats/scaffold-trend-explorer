@@ -6,6 +6,7 @@
 GET        /                                    controllers.Application.index
 GET        /about                               controllers.Application.about
 GET        /search                              controllers.Application.search
+GET        /marvin                              controllers.Application.marvin
 GET        /delete                              controllers.Application.delete(smiles: String)
 GET        /download                            controllers.Application.download(smiles: String, property: String)
 GET        /trends                              controllers.Application.displayTrends(smiles: Seq[String], property: String)

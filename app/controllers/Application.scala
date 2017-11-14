@@ -35,6 +35,10 @@ class Application @Inject()(cache: SyncCacheApi,
     )
   }
 
+  def marvin = Action {
+    Ok(views.html.marvin())
+  }
+
   def about = Action {
     Ok(views.html.about(this))
   }
