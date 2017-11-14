@@ -5,13 +5,15 @@
 } {
     <div class="container vertical-center" id="main-box">
 
-        <div class="col-md-12">
+        <div class="row">
 
-            <div class="page-header">
-                <h1>About the Scaffold Trend Explorer (v@app.APP_VERSION)</h1>
-            </div>
+            <div class="col-md-12">
 
-            <div class="row">
+                <div class="page-header">
+                    <h1>About the Scaffold Trend Explorer (v@app.APP_VERSION)</h1>
+                </div>
+
+
                 <p>Scaffolds are a core concept in medicinal chemistry and they can be the focus of multiple
                     independent development efforts, over an extended period. Thus, scaffold associated
                     properties can vary over time, possibly showing consistently increasing or decreasing trends.
@@ -21,7 +23,7 @@
                     the scaffold over time. This functionality is analogous to
                     <a href="https://trends.google.com/trends/">Google Trends</a>.</p>
                 <p>Currently the properties considered are</p>
-                <ul>
+                <ul style="padding-left: 2em;">
                     <li>Unique compound counts</li>
                     <li>Tested assay count</li>
                     <li>Solubility (log S at pH = 7.4), computed using <a href="https://www.optibrium.com/stardrop/stardrop-features.php">
@@ -35,7 +37,7 @@
                     query times. We currently employ some simple heuristics to avoid querying for such
                     cases.</p>
 
-                <p>For feedback and comments, please contact
+                <p>For feedback and issues, please contact
                     <a href="mailto:guhar@@mail.nih.gov"><code>guhar@@mail.nih.gov</code></a>
                 </p>
 
