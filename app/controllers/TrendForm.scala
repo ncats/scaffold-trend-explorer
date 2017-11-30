@@ -12,12 +12,13 @@ object TrendForm {
   import play.api.data.Form
   import play.api.data.Forms._
 
-  case class Data(smiles: String, property: String)
+  case class Data(smiles: String, property: String, allowSmallFragments: Option[String])
 
   val form = Form(
     mapping(
       "smiles" -> text,
-      "property" -> text)(Data.apply)(Data.unapply)
+      "property" -> text,
+      "allowSmallFragments" -> optional(text))(Data.apply)(Data.unapply)
   )
 
 }

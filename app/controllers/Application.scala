@@ -10,6 +10,7 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.{Configuration, Logger}
+import play.twirl.api.Html
 
 import scala.collection.mutable.ListBuffer
 
@@ -86,11 +87,11 @@ class Application @Inject()(cache: SyncCacheApi,
 
     TrendForm.form.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.about(this))
+        BadRequest(views.html.error(this, Html("<p class='lead'>The form was not correctly filled. This is probably a bug that should be reported to guhar@nih.gov</p>")))
       },
       data => {
-        data.smiles match {
-          case "" if smilesList.isEmpty => BadRequest(views.html.about(this))
+        data.smiles.trim match {
+          case "" if smilesList.isEmpty => BadRequest(views.html.error(this, Html("<p class='lead'>No SMILES was specified. Maybe you specified an empty string by mistake.</p>")))
           case "" if smilesList.nonEmpty => {
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }

@@ -1,0 +1,69 @@
+@* styling taken from http://alexphelps.github.io/server-error-pages/ *@
+
+@(app: controllers.Application, msg: Html)
+
+@main(app, "Scaffold Trend Explorer") {
+    @menu("compounds")
+} {
+
+    <style>
+    /* Error Page Inline Styles */
+    body {
+    }
+    /* Layout */
+    .jumbotron {
+      font-size: 21px;
+      font-weight: 200;
+      line-height: 2.1428571435;
+      color: inherit;
+    }
+    /* Everything but the jumbotron gets side spacing for mobile-first views */
+    .masthead, .body-content, {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    /* Main marketing message and sign up button */
+    .jumbotron {
+      text-align: center;
+      background-color: transparent;
+    }
+    .jumbotron .btn {
+      font-size: 21px;
+    }
+    /* Colors */
+    .green {color:#5cb85c;}
+    .orange {color:#f0ad4e;}
+    .red {color:#d9534f;}
+    </style>
+
+    <div class="container">
+      <!-- Jumbotron -->
+      <div class="jumbotron">
+        <h1><i class="fa fa-frown-o red"></i> 400 Bad Request</h1>
+        <p class="lead">We couldn't process your query.</p>
+        <p><a href="/ste" class="btn btn-default btn-lg"><span class="green">Take me to the search page</span></a>
+        </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="body-content">
+        <div class="row">
+          <div class="col-md-6">
+            <h2>What happened?</h2>
+            @msg
+          </div>
+
+            <!--
+          <div class="col-md-6">
+            <h2>What can I do?</h2>
+            <p class="lead">If you're a site visitor</p>
+            <p>Please use your browser's back button and check that you're in the right place. If you need immediate assistance, please send us an email instead.</p>
+            <p class="lead">If you're the site owner</p>
+             <p>Please check that you're in the right place and get in touch with your website provider if you believe this to be an error.</p>
+         </div>
+         -->
+        </div>
+      </div>
+    </div>
+}
