@@ -92,7 +92,7 @@
             padding-bottom: 0.5em;">
             <div class="form-group">
                 @helper.CSRF.formField
-                <a title="Draw a structure" id="showSketcher" class="btn btn-primary"><i class="fa fa-flask" aria-hidden="true"></i></a>
+                <a title="Draw a structure" id="showSketcher" class="btn btn-default"><i class="fa fa-flask" aria-hidden="true"></i></a>
                 <input type="text" class="form-control" placeholder="Enter a SMILES string" size="45" id='@form("smiles").name' name='@form("smiles").name'>
                 <select title="Property whose trend will be computed" class="form-control" id='@form("property").name' name='@form("property").name'>
                     <option value="compounds" @if(property.equals("compounds")) { selected }>Compounds</option>
@@ -101,13 +101,12 @@
                     <option value="Fsp3" @if(property.equals("Fsp3")) { selected }>Fsp3</option>
                     <option value="qed" @if(property.equals("qed")) { selected }>Chemical Beauty</option>
                 </select>
+                <button type="submit" class="btn btn-info">Search</button>
                 <br>
                 <label>
                     <input type="checkbox" class="form-control" id='@form("allowSmallFragments").name'
                     name='@form("allowSmallFragments").name'> Allow small fragments
                 </label>
-                <br>
-                <button type="submit" class="btn btn-default">Search</button>
             </div>
         </div>
     }
