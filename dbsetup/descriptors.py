@@ -8,7 +8,7 @@ import psycopg2.extras
 
 
 molsql = "select molregno, rdmol_smiles from compound_structures"
-insertsql = "insert into ste_descriptors (molregno, desc_name, desc_value) values %s"
+insertsql = "update ste_descriptors set XXX = data.val from (VALUES %s) as data (id,val)  where molregno = data.id"
 
 
 def compute_descriptor(con, label, func):
@@ -16,8 +16,9 @@ def compute_descriptor(con, label, func):
                             cursor_factory=psycopg2.extras.DictCursor)
     cursor.execute(molsql)
 
+    isql = insertsql.replace('XXX', label)
     icursor = con.cursor() ## for inserts
-    batch_size = 100
+    batch_size = 200
     batch = []
     i = 0
     nmol = 0
@@ -28,11 +29,11 @@ def compute_descriptor(con, label, func):
 
         try:
             m = Chem.MolFromSmiles(smi)
-            batch.append((molregno, label, func(m)))
+            batch.append((molregno, func(m)))
             i += 1
             if i == batch_size:
-                psycopg2.extras.execute_values(icursor, insertsql, batch,
-                                                   template=None, page_size=100)
+                psycopg2.extras.execute_values(icursor, isql, batch,
+                                                   template=None, page_size=200)
                 batch = []
                 i = 0
             if nmol % 50 == 0:
@@ -44,8 +45,8 @@ def compute_descriptor(con, label, func):
 
 if __name__ == '__main__':
     con = psycopg2.connect("dbname='chembl_23' user='guhar' host='ifxdev.ncats.nih.gov' password='ChemblRD23'")
-    ##compute_descriptor(con, "qed", qed)
-    compute_descriptor(con, "Fsp3", CalcFractionCSP3)
+    compute_descriptor(con, "qed", qed)
+    compute_descriptor(con, "fsp3", CalcFractionCSP3)
     con.commit()
     con.close()
     print

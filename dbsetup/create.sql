@@ -129,3 +129,12 @@ DROP INDEX "ROBUSTZ_ZSCORE_INDEX";
 CREATE INDEX "ROBUSTZ_ZSCORE_INDEX" ON "ACTIVITIES_ROBUSTZ" ("STANDARD_ZSCORE");
 
 /
+
+DROP INDEX "set_desc_name_idx";
+DROP INDEX "ste_desc_idx";
+DROP TABLE ste_descriptors;
+CREATE TABLE ste_descriptors (
+molregno integer primary key REFERENCES compound_structures (molregno),
+qed numeric,
+Fsp3 numeric,
+logS numeric);
