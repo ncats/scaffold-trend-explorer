@@ -26,6 +26,8 @@ class Application @Inject()(cache: SyncCacheApi,
 
   val APP_VERSION = config.get[String]("ste.application.version")
 
+  var splineCurve = false;
+
   def index = Action { implicit request =>
     // on loading the main page we start fresh, so: first, remove smiles list from cache
     request.session.get(SESSION_UUID_KEY) match {
@@ -62,7 +64,6 @@ class Application @Inject()(cache: SyncCacheApi,
 
   def delete(smiles: String) = Action { implicit request =>
     val property = request.queryString("property").head
-    val smoothCurve = request.queryString("smoothCurve").head
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     var smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
     smilesList = smilesList.filter(!_.equals(smiles))
@@ -95,9 +96,17 @@ class Application @Inject()(cache: SyncCacheApi,
         data.smiles.trim match {
           case "" if smilesList.isEmpty => BadRequest(views.html.error(this, Html("<p class='lead'>No SMILES was specified. Maybe you specified an empty string by mistake.</p>")))
           case "" if smilesList.nonEmpty && smilesList.size <= 9 => {
+            splineCurve = data.smoothCurve match {
+              case Some(smoothCurve) => true
+              case None => false
+            }
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }
           case _ => {
+            splineCurve = data.smoothCurve match {
+              case Some(smoothCurve) => true
+              case None => false
+            }
             smilesList += data.smiles
             if (smilesList.size > 9)
               BadRequest(views.html.error(this, Html("A maximum of 9 substructures can be compared")));
@@ -137,6 +146,6 @@ class Application @Inject()(cache: SyncCacheApi,
     }
 
 
-    Ok(views.html.trends(this, TrendForm.form, routes.Application.search(), property, smiles, smiColMap, trendData.flatten.toMap))
+    Ok(views.html.trends(this, TrendForm.form, routes.Application.search(), property, smiles, smiColMap, trendData.flatten.toMap, splineCurve))
   }
 }
