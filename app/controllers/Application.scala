@@ -62,6 +62,7 @@ class Application @Inject()(cache: SyncCacheApi,
 
   def delete(smiles: String) = Action { implicit request =>
     val property = request.queryString("property").head
+    val smoothCurve = request.queryString("smoothCurve").head
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     var smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
     smilesList = smilesList.filter(!_.equals(smiles))
@@ -85,6 +86,7 @@ class Application @Inject()(cache: SyncCacheApi,
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     val smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
 
+
     TrendForm.form.bindFromRequest.fold(
       formWithErrors => {
         BadRequest(views.html.error(this, Html("<p class='lead'>The form was not correctly filled. This is probably a bug that should be reported to guhar@nih.gov</p>")))
@@ -92,11 +94,13 @@ class Application @Inject()(cache: SyncCacheApi,
       data => {
         data.smiles.trim match {
           case "" if smilesList.isEmpty => BadRequest(views.html.error(this, Html("<p class='lead'>No SMILES was specified. Maybe you specified an empty string by mistake.</p>")))
-          case "" if smilesList.nonEmpty => {
+          case "" if smilesList.nonEmpty && smilesList.size <= 9 => {
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }
           case _ => {
             smilesList += data.smiles
+            if (smilesList.size > 9)
+              BadRequest(views.html.error(this, Html("A maximum of 9 substructures can be compared")));
             cache.set(uuid, smilesList)
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }
@@ -131,6 +135,8 @@ class Application @Inject()(cache: SyncCacheApi,
         })
       })
     }
+
+
     Ok(views.html.trends(this, TrendForm.form, routes.Application.search(), property, smiles, smiColMap, trendData.flatten.toMap))
   }
 }
