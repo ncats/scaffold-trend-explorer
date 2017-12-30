@@ -14,15 +14,11 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
   def medianFsp3(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
-      val pst = conn.prepareStatement("select docs.year, median(desc_value) as val " +
-        "from  compound_structures cs, " +
-        "activities act, docs, ste_descriptors sted " +
-        "where rdmol_smiles@>'" + smi + "' " +
-        "and cs.molregno = act.molregno " +
-        "and cs.molregno = sted.molregno " +
-        "and sted.desc_name = 'Fsp3' " +
-        "and act.doc_id = docs.doc_id " +
-        "and docs.year is not null " +
+      val pst = conn.prepareStatement("select year, median(fsp3) as val " +
+        "from  ste_moldoc stm, ste_descriptors sted, rdk.mols " +
+        "where m@>'" + smi + "' " +
+        "and mols.molregno = stm.molregno " +
+        "and mols.molregno = sted.molregno " +
         "group by year " +
         "order by year")
       val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
@@ -33,15 +29,11 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
   def medianSolubility(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
-      val pst = conn.prepareStatement("select docs.year, median(desc_value) as val " +
-        "from  compound_structures cs, " +
-        "activities act, docs, ste_descriptors sted " +
-        "where rdmol_smiles@>'" + smi + "' " +
-        "and cs.molregno = act.molregno " +
-        "and cs.molregno = sted.molregno " +
-        "and sted.desc_name = 'logS' " +
-        "and act.doc_id = docs.doc_id " +
-        "and docs.year is not null " +
+      val pst = conn.prepareStatement("select year, median(logS) as val " +
+        "from  ste_moldoc stm, ste_descriptors sted, rdk.mols " +
+        "where m@>'" + smi + "' " +
+        "and mols.molregno = stm.molregno " +
+        "and mols.molregno = sted.molregno " +
         "group by year " +
         "order by year")
       val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
@@ -52,17 +44,13 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
   def medianQED(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
-      val pst = conn.prepareStatement("select docs.year, median(desc_value) as val " +
-        "from  compound_structures cs, " +
-        "activities act, docs, ste_descriptors sted " +
-        "where rdmol_smiles@>'" + smi + "' " +
-        "and cs.molregno = act.molregno " +
-        "and cs.molregno = sted.molregno " +
-        "and sted.desc_name = 'qed' " +
-        "and act.doc_id = docs.doc_id " +
-        "and docs.year is not null " +
-        "group by year " +
-        "order by year")
+      val pst = conn.prepareStatement("select year, median(qed) as val " +
+              "from  ste_moldoc stm, ste_descriptors sted, rdk.mols " +
+              "where m@>'" + smi + "' " +
+              "and mols.molregno = stm.molregno " +
+              "and mols.molregno = sted.molregno " +
+              "group by year " +
+              "order by year")
       val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
       riter.toList.flatten.toMap
     }
@@ -71,16 +59,12 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
   def compoundCounts(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
-      val pst = conn.prepareStatement("select docs.year, count(cs.molregno) as val " +
-        "from compound_structures cs, " +
-        "activities act, docs " +
-        "where rdmol_smiles@>'" + smi + "' " +
-        "and cs.molregno = act.molregno " +
-        "and act.doc_id = docs.doc_id " +
-        "and act.standard_relation = '=' " +
-        "and docs.year is not null " +
-        "group by year " +
-        "order by year")
+      val pst = conn.prepareStatement("select year, count(stm.molregno) as val " +
+              "from  ste_moldoc stm, rdk.mols " +
+              "where m@>'" + smi + "' " +
+              "and mols.molregno = stm.molregno " +
+              "group by year " +
+              "order by year")
       val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
       riter.toList.flatten.toMap
     }

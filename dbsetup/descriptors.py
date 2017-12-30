@@ -7,13 +7,12 @@ import psycopg2
 import psycopg2.extras
 
 
-molsql = "select molregno, rdmol_smiles from compound_structures"
+molsql = "select molregno, canonical_smiles from compound_structures"
 insertsql = "update ste_descriptors set XXX = data.val from (VALUES %s) as data (id,val)  where molregno = data.id"
 
 
 def compute_descriptor(con, label, func):
-    cursor = con.cursor('cursor_unique_name',
-                            cursor_factory=psycopg2.extras.DictCursor)
+    cursor = con.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
     cursor.execute(molsql)
 
     isql = insertsql.replace('XXX', label)
@@ -44,8 +43,9 @@ def compute_descriptor(con, label, func):
             sys.stdout.flush()
 
 if __name__ == '__main__':
-    con = psycopg2.connect("dbname='chembl_23' user='guhar' host='ifxdev.ncats.nih.gov' password='ChemblRD23'")
+    con = psycopg2.connect("dbname='chembl_23' user='chembl_23' port=5433 host='ifxdev.ncats.nih.gov' password='chembl_23'")
     compute_descriptor(con, "qed", qed)
+    con.commit()    
     compute_descriptor(con, "fsp3", CalcFractionCSP3)
     con.commit()
     con.close()

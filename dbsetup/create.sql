@@ -138,3 +138,6 @@ molregno integer primary key REFERENCES compound_structures (molregno),
 qed numeric,
 Fsp3 numeric,
 logS numeric);
+drop table ste_moldoc;
+create table ste_moldoc as select molregno, year, journal from activities, docs where activities.doc_id = docs.doc_id and year is not null;
+create index idx_moldoc on ste_moldoc(molregno);
