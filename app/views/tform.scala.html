@@ -104,8 +104,9 @@
                 <button type="submit" class="btn btn-info">Search</button>
                 <br>
                 <label>
-                    <input type="checkbox" class="form-control" id='@form("allowSmallFragments").name'
-                    name='@form("allowSmallFragments").name'> Allow small fragments
+                    <input disabled type="checkbox" class="form-control" id='@form("allowSmallFragments").name'
+                    name='@form("allowSmallFragments").name'>
+                    <label style='color: #ccc;' for='@form("allowSmallFragments").name' class="control-label">Allow small fragments</label>
                     &nbsp;&nbsp;
                     <input type="checkbox" class="form-control" id='@form("smoothCurve").name'
                     name='@form("smoothCurve").name' @if(smoothCurve) {checked}> Smooth curve
