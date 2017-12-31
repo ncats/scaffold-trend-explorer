@@ -75,10 +75,10 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
 
     db.withConnection { conn =>
       val pst = conn.prepareStatement("select docs.year, count(distinct act.assay_id) as val " +
-        "from compound_structures cs, activities_robustz act, docs " +
+        "from rdk.mols, activities_robustz act, docs " +
         "where " +
-        "rdmol_smiles@>'" + smi + "' " +
-        "and cs.molregno = act.molregno " +
+        "m@>'" + smi + "' " +
+        "and mols.molregno = act.molregno " +
         "and act.doc_id = docs.doc_id " +
         "and docs.year is not null " +
         "group by year " +
