@@ -38,7 +38,7 @@
                     cases.</p>
 
                 <p>For feedback and issues, please contact
-                    <a href="mailto:guhar@@mail.nih.gov"><code>guhar@@mail.nih.gov</code></a>
+                    <a href="mailto:guhar@@mail.nih.gov"><code>guhar@@nih.gov</code></a>
                 </p>
 
                 <p class="lead">How can I cite this application?</p>
@@ -46,16 +46,38 @@
             <blockquote class="blockquote">
                 Zdrazil, B. and Guha, R., <i>J. Med. Chem.</i>, <b>2007</b>, ASAP. DOI:
                 <a href="10.1021/acs.jmedchem.7b00954">10.1021/acs.jmedchem.7b00954</a>
-            </blockquote></p>
+            </blockquote>
 
-                    <!--
                 <p class="lead">Frequently Asked Questions</p>
-
                 <dl>
+                    <dt>What version of ChEMBL are you using?</dt>
+                    <dl>We currently use ChEMBL v23</dl>
+                    <dt>What is the application written in?</dt>
+                    <dl>We use the <a href="https://www.playframework.com/">Play</a> framework, with a
+                    <a href="https://www.postgresql.org/">PostgreSQL</a> backend, and <a href="http://www.rdkit.org/">RDKit</a>
+                        to support cheminformatics operations. Plotting is enabled using <a href="https://www.highcharts.com/">
+                            HighCharts</a></dl>
+                    <dt>Where can I get the sources for this application?</dt>
+                    <dl>You can get the source code for this application from its Git <a href="https://spotlite.nih.gov/ncats/scaffold-trend-explorer">
+                        repository</a>, where you can find instructions on compiling and depoying
+                    </dl>
+                    <dt>Where can I report bugs or feature requests?</dt>
+                    <dl>You can email Rajarshi Guha at <a href="mailto:guhar@@mail.nih.gov"><code>guhar@@nih.gov</code></a>, but
+                    filing issues on the <a href="https://spotlite.nih.gov/ncats/scaffold-trend-explorer/issues">tracker</a>
+                    is preferred (and will have a better chance of being addressed)</dl>
+                    <dt>Which ChEMBL assays do you consider?</dt>
+                    <dl>Currently we consider all assays with units of <code>Ki</code> or <code>IC50</code>, with at least 5
+                    observations, and median absolute deviation of the activity values greater than 0.No constraints are
+                    applied to species or targets</dl>
                     <dt>How is bioassay activity calculated?</dt>
-                    <dd>Foo</dd>
+                    <dd>We first compute the median and <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">
+                        MAD</a> for each assay that has a <code>standard_type</code> of <code>Ki</code> or <code>IC50</code>.
+                    We then remove assays with less than 5 observations or a MAD = 0 (correct to 4 decimal places). Next
+                    we use the median and MAD values for each assay to convert the <code>standard_value</code>'s to
+                    robust <a href="https://en.wikipedia.org/wiki/Z-factor">Z-scores</a>. The robust Z-scores are used
+                    to compute the median bioactivity trends. Currently no constraints are applied to target or species.</dd>
                 </dl>
-                -->
+
             </div>
         </div>
     </div>
