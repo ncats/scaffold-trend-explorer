@@ -135,6 +135,7 @@ class Application @Inject()(cache: SyncCacheApi,
           val v = property match {
             case "compounds" => chembl.compoundCounts(s)
             case "assays" => chembl.assayCounts(s)
+            case "activity" => chembl.assayActivity(s)
             case "qed" => chembl.medianQED(s)
             case "logS" => chembl.medianSolubility(s)
             case "Fsp3" => chembl.medianFsp3(s)

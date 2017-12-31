@@ -86,6 +86,24 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
       val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
       riter.toList.flatten.toMap
     }
-
   }
+
+  def assayActivity(smi: String): Map[Int, Double] = {
+    if (smi.isEmpty) None
+
+    db.withConnection { conn =>
+      val pst = conn.prepareStatement("select docs.year, median(distinct act.standard_zscore) as val " +
+        "from rdk.mols, activities_robustz act, docs " +
+        "where " +
+        "m@>'" + smi + "' " +
+        "and mols.molregno = act.molregno " +
+        "and act.doc_id = docs.doc_id " +
+        "and docs.year is not null " +
+        "group by year " +
+        "order by year;")
+      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
+      riter.toList.flatten.toMap
+    }
+  }
+
 }
