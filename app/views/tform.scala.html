@@ -19,6 +19,23 @@
                     editorControl.close();
                 });
 
+                $("#smacontrol").on('change', function() {
+                   var value = this.value;
+                   var nseries = myChart.series.length;
+                   for (var i = 0; i < nseries; i++) {
+                       if (value == -1 && myChart.series[i].name.indexOf("SMA") == -1)
+                           myChart.series[i].show();
+                       else if (value == 3 && myChart.series[i].name.indexOf("SMA(3)") != -1)
+                           myChart.series[i].show();
+                       else if (value == 5 && myChart.series[i].name.indexOf("SMA(5)") != -1)
+                           myChart.series[i].show();
+                       else if (value == 10 && myChart.series[i].name.indexOf("SMA(10)") != -1)
+                           myChart.series[i].show();
+                       else
+                           myChart.series[i].hide();
+                   }
+                });
+
                 MarvinJSUtil.getPackage("sketch").then(function (marvinNameSpace) {
                     marvinNameSpace.onReady(function () {
                         marvin = marvinNameSpace;
@@ -118,6 +135,16 @@
                     name='@form("smoothCurve").name' @if(smoothCurve) {checked}> Smooth curve
                 </label>
             </div>
+
+            <br>
+
+            <select class="form-control" id="smacontrol" name="smacontrol">
+                <option value="-1">No moving average</option>
+                <option value="3">3-year moving average</option>
+                <option value="5">5-year moving average</option>
+                <option value="10">10-year moving average</option>
+            </select>
+
         </div>
     </div>
 }

@@ -4,18 +4,18 @@
         smoothCurve: Boolean)(implicit request: MessagesRequestHeader)
 
 
-@getYaxisLabel(s: String) = @{
-    s match {
-        case "compounds" => "Unique Compound Count"
-        case "activity" => "Median Z-scored Bioactivity"
-        case "assays" => "Tested Bioassays"
-        case "jifs" => "Median JIF Rank"
-        case "qed" => "Median Chemical Beauty"
-        case "logS" => "Median logS (pH = 7.4)"
-        case "Fsp3" => "Median Fsp3"
-        case "complexity" => "Molecular Complexity"
+    @getYaxisLabel(s: String) = @{
+        s match {
+            case "compounds" => "Unique Compound Count"
+            case "activity" => "Median Z-scored Bioactivity"
+            case "assays" => "Tested Bioassays"
+            case "jifs" => "Median JIF Rank"
+            case "qed" => "Median Chemical Beauty"
+            case "logS" => "Median logS (pH = 7.4)"
+            case "Fsp3" => "Median Fsp3"
+            case "complexity" => "Molecular Complexity"
+        }
     }
-}
 
     @main(app, "Scaffold Trend Explorer") {
         @menu(property)
@@ -59,61 +59,90 @@
         <script type="text/javascript">
 
                 function displayCompounds(smi, year, prop, elem) {
-                   $.get({
-                       url:""
-                   })
+                    $.get({
+                        url: ""
+                    })
                 }
 
-                $(function () {
-                    var myChart = new Highcharts.Chart({
-                        credits: false,
-                        chart: {
-                            renderTo: 'plotDiv',
-                            type: '@if(!smoothCurve){line} else {spline}'
-                        },
-                        plotOptions: {
-                            series: {
-                                point: {
-                                    events: {
-                                        click: function (e) {
-                                            displayCompounds(this.series.name, this.x, "@property", "#controlDiv");
-                                        }
+
+                var myChart = new Highcharts.Chart({
+                    credits: false,
+                    chart: {
+                        renderTo: 'plotDiv',
+                        type: '@if(!smoothCurve){line} else {spline}'
+                    },
+                    plotOptions: {
+                        series: {
+                            point: {
+                                events: {
+                                    click: function (e) {
+                                        displayCompounds(this.series.name, this.x, "@property", "#controlDiv");
                                     }
                                 }
                             }
-                        },
+                        }
+                    },
+                    title: {
+                        text: null
+                    },
+                    xAxis: {
                         title: {
-                            text: null
+                            text: ''
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: '@getYaxisLabel(property)'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: '',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                        shared: true
+                    },
+                    series: [
+                        @for( (smi,cmap) <- trendData ) {
+                        {
+                            name: '@smi',
+                            id: '@smi',
+                            showInLegend: false,
+                            color: '@smiColMap(smi)',
+                            data: [
+                                @for( (x,y) <- cmap.toList.sortWith(_._1 < _._1) ) { [@x, @y], }
+                            ]
                         },
-                        xAxis: {
-                            title: {
-                                text: ''
-                            }
+                        {
+                            name: "SMA(3) @smi",
+                            id: "SMA(3) @smi",
+                            type: "sma",
+                            params: {period: 3},
+                            linkedTo: '@smi',
+                            color: '@smiColMap(smi)',
+                            visible: false
                         },
-                        yAxis: {
-                            title: {
-                                text: '@getYaxisLabel(property)'
-                            }
+                        {
+                            name: "SMA(5) @smi",
+                            id: "SMA(5) @smi",
+                            type: "sma",
+                            params: {period: 5},
+                            linkedTo: '@smi',
+                            color: '@smiColMap(smi)',
+                            visible: false
                         },
-                        tooltip: {
-                            valueSuffix: '',
-                            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                            shared: true
+                        {
+                            name: "SMA(10) @smi",
+                            id: "SMA(10) @smi",
+                            type: "sma",
+                            params: {period: 10},
+                            linkedTo: '@smi',
+                            color: '@smiColMap(smi)',
+                            visible: false
                         },
-                        series: [
-                            @for( (smi,cmap) <- trendData ) {
-                            {
-                                name: '@smi',
-                                showInLegend: false,
-                                color: '@smiColMap(smi)',
-                                data: [
-                                    @for( (x,y) <- cmap.toList.sortWith(_._1 < _._1) ) { [@x, @y], }
-                                ]
-                            },
-                            }
-                        ]
-                    });
+
+                        }
+                    ]
                 });
+
         </script>
 
     }
