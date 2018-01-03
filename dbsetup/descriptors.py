@@ -5,12 +5,15 @@ from rdkit.Chem.rdMolDescriptors import CalcFractionCSP3
 import sys
 import psycopg2
 import psycopg2.extras
+import sascorer
 
 
 molsql = "select molregno, canonical_smiles from compound_structures"
 insertsql = "update ste_descriptors set XXX = data.val from (VALUES %s) as data (id,val)  where molregno = data.id"
 
-
+def SAScore(m):
+    return sascorer.calculateScore(m)
+    
 def compute_descriptor(con, label, func):
     cursor = con.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
     cursor.execute(molsql)
@@ -44,9 +47,11 @@ def compute_descriptor(con, label, func):
 
 if __name__ == '__main__':
     con = psycopg2.connect("dbname='chembl_23' user='chembl_23' port=5433 host='ifxdev.ncats.nih.gov' password='chembl_23'")
-    compute_descriptor(con, "qed", qed)
-    con.commit()    
-    compute_descriptor(con, "fsp3", CalcFractionCSP3)
+    #compute_descriptor(con, "qed", qed)
+    #con.commit()    
+    #compute_descriptor(con, "fsp3", CalcFractionCSP3)
+    #con.commit()
+    compute_descriptor(con, "sa", SAScore)
     con.commit()
     con.close()
     print

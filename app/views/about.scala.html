@@ -30,9 +30,10 @@
                     <li>Solubility (log S at pH = 7.4), computed using <a href="https://www.optibrium.com/stardrop/stardrop-features.php">
                         StarDrop</a></li>
                     <li>Fsp3 (fraction of sp3 carbons, a measure of 3D-ness)</li>
-                    <li>Chemical beauty (a measure of drug-likeness described in
-                        <a href="https://www.nature.com/nchem/journal/v4/n2/full/nchem.1243.html">
-                            Bickerton et al, <i>Nat. Chem. Biol.</i>, <b>2012</b>, <i>4</i>(2), 90-98</a>).
+                    <li>Chemical beauty, a measure of drug-likeness described in
+                        Bickerton et al, (<a href="https://www.nature.com/nchem/journal/v4/n2/full/nchem.1243.html"><i>Nat. Chem. Biol.</i>, <b>2012</b>, <i>4</i>(2), 90-98</a>).
+                    <li>Synthetic accessibility, based on the RDKit <a href="">implementation</a> of the
+                    method by Ertl &amp; Schuffenhauer (<a href="http://www.jcheminf.com/content/1/1/8">J. Cheminf., <b>2009</b>, <i>1:8</i></a>)</li>
                 </ul>
                 <p>As you might expect, very small or commonly occurring scaffolds can result in long
                     query times. We currently employ some simple heuristics to avoid querying for such

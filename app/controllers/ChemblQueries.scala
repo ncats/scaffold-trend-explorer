@@ -26,6 +26,21 @@ class ChemblQueries @Inject()(db: Database) extends EntityHelper {
     }
   }
 
+  def medianSA(smi: String): Map[Int, Double] = {
+    if (smi.isEmpty) None
+    db.withConnection { conn =>
+      val pst = conn.prepareStatement("select year, median(sa) as val " +
+        "from  ste_moldoc stm, ste_descriptors sted, rdk.mols " +
+        "where m@>'" + smi + "' " +
+        "and mols.molregno = stm.molregno " +
+        "and mols.molregno = sted.molregno " +
+        "group by year " +
+        "order by year")
+      val riter = results(pst.executeQuery())(rs => Map(rs.getInt(1) -> rs.getDouble(2)))
+      riter.toList.flatten.toMap
+    }
+  }
+
   def medianSolubility(smi: String): Map[Int, Double] = {
     if (smi.isEmpty) None
     db.withConnection { conn =>
