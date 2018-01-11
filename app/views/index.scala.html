@@ -1,7 +1,7 @@
-@(app: controllers.Application, form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
+@(app: controllers.Application, form: Form[TrendForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader, configuration: play.api.Configuration)
 
 @main(app, "Scaffold Trend Explorer") {
-    @menu("compounds")
+    @menu("compounds", configuration)
 } {
 
     <div class="container vertical-center" id="main-box">
@@ -12,9 +12,6 @@
                 <a href="@controllers.routes.Application.about()">here</a> for a description of the
                 properties available. You can visually compare trends for multiple scaffolds simultaneously and download the trend data
                 for individual scaffolds or all of them at one go. Note that for small scaffolds, query times can be long.
-                <!-- and as a result, we disable queries for scaffolds with less than 8 heavy atoms. If you're
-                willing to wait, this can be enabled.
-                -->
             </div>
         </div>
 

@@ -1,4 +1,6 @@
-@(property: String)
+@import play.api.Configuration
+
+@(property: String, configuration: play.api.Configuration)
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -16,14 +18,9 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bookmarked Scaffolds<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a class='bmlink' smiles='C1CC2(CCNCC2)C2=CC=CC=C12'>
-                            Spiroindanypiperadine</a></li>
-                        <li><a class='bmlink' smiles='C1=CN2C=CC=CC2=C1'/>Indolizine</a></li>
-                        <li><a class='bmlink' smiles='C1=CC2=C(C=C1)N=CC=C2'>Quinoline</a></li>
-                        <li><a class='bmlink' smiles='C1CC2CCC3C(CCC4CCCCC34)C2C1'>
-                            Steroid core</a></li>
-                        <li><a class='bmlink' smiles='C1COC1'>Oxetane</a></li>
-                        <li><a class='bmlink' smiles='O=C1CSC(=S)N1'>Rhodanine</a></li>
+                        @configuration.get[Seq[Configuration]]("bookmarks.entries").map { config =>
+                            <li><a class='bmlink' smiles='@config.get[String]("smi")'>@config.get[String]("name")</a></li>
+                        }
                     </ul>
                 </li>
             </ul>

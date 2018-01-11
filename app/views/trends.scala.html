@@ -1,7 +1,7 @@
 @(app: controllers.Application, form: Form[TrendForm.Data], postUrl: Call,
         property: String, smiles: Seq[String], smiColMap: Map[String, String],
         trendData: Map[String, Map[Int, Double]],
-        smoothCurve: Boolean)(implicit request: MessagesRequestHeader)
+        smoothCurve: Boolean)(implicit request: MessagesRequestHeader, configuration: play.api.Configuration)
 
 
     @getYaxisLabel(s: String) = @{
@@ -19,7 +19,7 @@
     }
 
     @main(app, "Scaffold Trend Explorer") {
-        @menu(property)
+    @menu(property, configuration)
     } {
 
         <div class="container vertical-center" id="main-box">

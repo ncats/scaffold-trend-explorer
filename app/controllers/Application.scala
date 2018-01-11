@@ -18,17 +18,19 @@ import scala.collection.mutable.ListBuffer
 class Application @Inject()(cache: SyncCacheApi,
                             db: Database,
                             cc: MessagesControllerComponents,
-                            config: Configuration)
+                            configuration: Configuration)
   extends MessagesAbstractController(cc) with I18nSupport {
 
   // allows us to track the SMILES being specified
   val SESSION_UUID_KEY = "STE_UUID"
 
-  val APP_VERSION = config.get[String]("ste.application.version")
+  val APP_VERSION = configuration.get[String]("ste.application.version")
 
   var splineCurve = false;
 
   def index = Action { implicit request =>
+    implicit lazy val config = configuration
+
     // on loading the main page we start fresh, so: first, remove smiles list from cache
     request.session.get(SESSION_UUID_KEY) match {
       case Some(x) => cache.remove(x)
@@ -59,6 +61,7 @@ class Application @Inject()(cache: SyncCacheApi,
   }
 
   def about = Action {
+    implicit lazy val config = configuration
     Ok(views.html.about(this))
   }
 
@@ -84,6 +87,8 @@ class Application @Inject()(cache: SyncCacheApi,
   }
 
   def search = Action { implicit request =>
+    implicit lazy val config = configuration
+
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     val smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
 
@@ -119,6 +124,7 @@ class Application @Inject()(cache: SyncCacheApi,
   }
 
   def displayTrends(smiles: Seq[String], property: String) = Action { implicit request =>
+    implicit lazy val config = configuration
 
     // we'll assume we have up to 9 trends being plotted
     val colorPalette = List[String]("#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999")

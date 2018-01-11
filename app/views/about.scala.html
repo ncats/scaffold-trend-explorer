@@ -1,7 +1,7 @@
-@(app: controllers.Application)
+@(app: controllers.Application)(implicit configuration: play.api.Configuration)
 
 @main(app, "Scaffold Trend Explorer") {
-    @menu("compounds")
+    @menu("compounds", configuration)
 } {
     <div class="container vertical-center" id="main-box">
 

@@ -1,9 +1,8 @@
 @* styling taken from http://alexphelps.github.io/server-error-pages/ *@
-
-@(app: controllers.Application, msg: Html)
+@(app: controllers.Application, msg: Html)(implicit configuration: play.api.Configuration)
 
 @main(app, "Scaffold Trend Explorer") {
-    @menu("compounds")
+    @menu("compounds", configuration)
 } {
 
     <style>
