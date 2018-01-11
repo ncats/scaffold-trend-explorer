@@ -20,8 +20,7 @@
                     <ul class="dropdown-menu">
                         @defining(configuration.get[Seq[Configuration]]("bookmarks.entries").sortBy(_.get[String]("name"))) { configs =>
                             @configs.map { config =>
-                                <li><a class='bmlink' smiles='@config.asInstanceOf[Configuration].get[String]("smi")'>@config.asInstanceOf[Configuration]
-                                    .get[String]("name")</a></li>
+                                <li><a class='bmlink' smiles='@config.asInstanceOf[Configuration].get[String]("smi")'>@config.asInstanceOf[Configuration].get[String]("name")</a></li>
                             }
                         }
                     </ul>
