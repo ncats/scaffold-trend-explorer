@@ -3,6 +3,7 @@ package controllers
 import java.util.UUID
 import javax.inject._
 
+import chemaxon.formats.MolImporter
 import chemaxon.util.MolHandler
 import play.api.cache.SyncCacheApi
 import play.api.db.Database
@@ -86,35 +87,48 @@ class Application @Inject()(cache: SyncCacheApi,
         CONTENT_DISPOSITION -> s"attachment; filename=ste-$smiles-$property.csv")
   }
 
+  def invalidSmiles(smi: String): Boolean = {
+    val mol = MolImporter.importMol(smi)
+    val valenceErrors = mol.hasValenceError
+    val emptyMol = mol.isEmpty
+    val hasQuery = mol.isQuery
+    val hasPseudo = mol.getAtomArray.exists(_.isPseudo)
+
+    mol.aromatize()
+    mol.dearomatize()
+    val badArom = mol.getBondArray.exists(_.isConjugated)
+
+    valenceErrors || hasQuery || hasPseudo || emptyMol
+  }
+
   def search = Action { implicit request =>
     implicit lazy val config = configuration
 
     val uuid = request.session.get(SESSION_UUID_KEY).getOrElse("")
     val smilesList = cache.get(uuid).getOrElse(new ListBuffer[String]())
 
-
     TrendForm.form.bindFromRequest.fold(
       formWithErrors => {
         BadRequest(views.html.error(this, Html("<p class='lead'>The form was not correctly filled. This is probably a bug that should be reported to guhar@nih.gov</p>")))
       },
       data => {
+
+        splineCurve = data.smoothCurve match {
+          case Some(smoothCurve) => true
+          case None => false
+        }
+
         data.smiles.trim match {
-          case "" if smilesList.isEmpty => BadRequest(views.html.error(this, Html("<p class='lead'>No SMILES was specified. Maybe you specified an empty string by mistake.</p>")))
-          case "" if smilesList.nonEmpty && smilesList.size <= 9 => {
-            splineCurve = data.smoothCurve match {
-              case Some(smoothCurve) => true
-              case None => false
-            }
+          case "" if smilesList.isEmpty =>
+            BadRequest(views.html.error(this, Html("<p class='lead'>No SMILES was specified. Maybe you specified an empty string by mistake.</p>")))
+          case "" if smilesList.nonEmpty && smilesList.size <= 9 =>
             Redirect(routes.Application.displayTrends(smilesList, data.property))
-          }
+          case _ if invalidSmiles(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>"+data.smiles + "</code> is an invalid SMILES string")))
           case _ => {
-            splineCurve = data.smoothCurve match {
-              case Some(smoothCurve) => true
-              case None => false
-            }
+            if (smilesList.size + 1 > 9)
+              BadRequest(views.html.error(this, Html("A maximum of 9 substructures can be compared")))
+
             smilesList += data.smiles
-            if (smilesList.size > 9)
-              BadRequest(views.html.error(this, Html("A maximum of 9 substructures can be compared")));
             cache.set(uuid, smilesList)
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           }
