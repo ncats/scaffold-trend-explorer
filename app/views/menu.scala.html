@@ -18,8 +18,11 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bookmarked Scaffolds<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        @configuration.get[Seq[Configuration]]("bookmarks.entries").map { config =>
-                            <li><a class='bmlink' smiles='@config.get[String]("smi")'>@config.get[String]("name")</a></li>
+                        @defining(configuration.get[Seq[Configuration]]("bookmarks.entries").sortBy(_.get[String]("name"))) { configs =>
+                            @configs.map { config =>
+                                <li><a class='bmlink' smiles='@config.asInstanceOf[Configuration].get[String]("smi")'>@config.asInstanceOf[Configuration]
+                                    .get[String]("name")</a></li>
+                            }
                         }
                     </ul>
                 </li>
