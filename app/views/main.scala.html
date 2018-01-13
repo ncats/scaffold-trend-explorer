@@ -61,7 +61,7 @@
         <script src="https://code.highcharts.com/stock/indicators/indicators.js"></script>
 
         <link rel="stylesheet" href='@routes.Assets.versioned("ginas/css/ginas.css")'>
-            <link rel="stylesheet" href='@routes.Assets.versioned("ginas/css/drugs.css")'>
+        <link rel="stylesheet" href='@routes.Assets.versioned("ginas/css/drugs.css")'>
 
             <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112438441-1"></script>
@@ -77,39 +77,42 @@
 
     </head>
     <body>
-        <div id="ncatsRibbon">
-            <div class="container no-gutter">
-                <img src="@routes.Assets.versioned("images/nihribbon-hhs.svg")" alt="HHS Logo" class="ncats-ribbon hhs-logo">
+        <div id="wrap">
 
-                <a href="http://www.hhs.gov/"
-                title="U.S. Department of Health & Human Services | Homepage"
-                class="ext"
-                target="_blank">U.S. Department of Health &amp; Human Services</a>
+            <div id="ncatsRibbon">
+                <div class="container no-gutter">
+                    <img src="@routes.Assets.versioned("images/nihribbon-hhs.svg")" alt="HHS Logo" class="ncats-ribbon hhs-logo">
 
-                <img src="@routes.Assets.versioned("images/nihribbon-divider.svg")" class="nihDivider ncats-ribbon" alt="Divider Arrow">
-                <img src="@routes.Assets.versioned("images/nih-ribbon.svg")" class="nihArrows ncats-ribbon nih-logo" alt="NIH Logo">
+                    <a href="http://www.hhs.gov/"
+                    title="U.S. Department of Health & Human Services | Homepage"
+                    class="ext"
+                    target="_blank">U.S. Department of Health &amp; Human Services</a>
 
-                <a href="http://www.nih.gov/"
-                title="National Institutes of Health | Homepage"
-                class="ext"
-                target="_blank">National Institutes of Health</a>
+                    <img src="@routes.Assets.versioned("images/nihribbon-divider.svg")" class="nihDivider ncats-ribbon" alt="Divider Arrow">
+                    <img src="@routes.Assets.versioned("images/nih-ribbon.svg")" class="nihArrows ncats-ribbon nih-logo" alt="NIH Logo">
 
-                <img src="@routes.Assets.versioned("images/nihribbon-divider.svg")" class="nihDivider ncats-ribbon" alt="Divider Arrow">
-                <img src="@routes.Assets.versioned("images/nih-ribbon.svg")" class="nihArrows ncats-ribbon nih-logo" alt="NIH Logo">
+                    <a href="http://www.nih.gov/"
+                    title="National Institutes of Health | Homepage"
+                    class="ext"
+                    target="_blank">National Institutes of Health</a>
 
-                <a href="http://www.ncats.nih.gov"
-                title="National Center for Advancing Translational Sciences | Homepage"
-                target="new">NCATS</a>
+                    <img src="@routes.Assets.versioned("images/nihribbon-divider.svg")" class="nihDivider ncats-ribbon" alt="Divider Arrow">
+                    <img src="@routes.Assets.versioned("images/nih-ribbon.svg")" class="nihArrows ncats-ribbon nih-logo" alt="NIH Logo">
+
+                    <a href="http://www.ncats.nih.gov"
+                    title="National Center for Advancing Translational Sciences | Homepage"
+                    target="new">NCATS</a>
+                </div>
             </div>
-        </div>
 
-        <div class="row-fluid" id="main-menu">@menu</div>
+            <div class="row-fluid" id="main-menu">@menu</div>
 
-        <div class="content">
+            <div class="content">
             @content
+            </div>
+            <div id="push"></div>
         </div>
 
         @footer()
-
     </body>
 </html>
