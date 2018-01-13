@@ -11,22 +11,40 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/ste">STE</a>
+
+            <span class="navbar-brand navbar-nav">
+
+
+                <a href="@controllers.routes.Application.index()"
+                target="_self" alt ="Home"
+                aria-label="Return Home"
+                title="Return Home">
+					<span class="sr-only">Return Home</span>
+					<span class="logo-header">Scaffold Trend Explorer</span>
+                </a>
+                <a href="http://www.ncats.nih.gov"
+                                title="National Center for Advancing Translational Sciences | Homepage"
+                                target="new">
+                                    <img style="visibility:hidden;" src="@routes.Assets.versioned("ginas/images/ncats.svg")" alt="ncats logo" class="img-responsive" id="logo">
+                                </a>
+            </span>
+
         </div>
+
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+
+            <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bookmarked Scaffolds<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Bookmarked Scaffolds<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        @defining(configuration.get[Seq[Configuration]]("bookmarks.entries").sortBy(_.get[String]("name"))) { configs =>
-                            @configs.map { config =>
-                                <li><a class='bmlink' smiles='@config.asInstanceOf[Configuration].get[String]("smi")'>@config.asInstanceOf[Configuration].get[String]("name")</a></li>
-                            }
+                    @defining(configuration.get[Seq[Configuration]]("bookmarks.entries").sortBy(_.get[String]("name"))) { configs =>
+                        @configs.map { config =>
+                            <li><a class='bmlink' smiles='@config.asInstanceOf[Configuration].get[String]("smi")'>@config.asInstanceOf[Configuration].get[String]("name")</a></li>
                         }
+                    }
                     </ul>
                 </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
                 <li><a href="@controllers.routes.Application.about()">About</a></li>
                 <!--
                 <li class="dropdown">
