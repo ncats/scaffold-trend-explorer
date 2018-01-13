@@ -4,6 +4,7 @@ import java.util.UUID
 import javax.inject._
 
 import chemaxon.formats.MolImporter
+import chemaxon.sss.search.MolSearch
 import chemaxon.util.MolHandler
 import play.api.cache.SyncCacheApi
 import play.api.db.Database
@@ -27,7 +28,7 @@ class Application @Inject()(cache: SyncCacheApi,
 
   val APP_VERSION = configuration.get[String]("ste.application.version")
 
-  var splineCurve = false;
+  var splineCurve = false
 
   def index = Action { implicit request =>
     implicit lazy val config = configuration
@@ -101,6 +102,33 @@ class Application @Inject()(cache: SyncCacheApi,
     valenceErrors || hasQuery || hasPseudo || emptyMol
   }
 
+  /**
+    * some simple check -
+    *
+    * - benzene ring
+    * - linear chain of length <= 5
+    */
+
+
+  def trivialMolecule(smi: String): Boolean = {
+    val  s = new MolSearch
+    val mol = new MolHandler("c1ccccc1", true)
+    mol.aromatize()
+    val benzene = mol.getMolecule.toFormat("smiles:u")
+    val mh = new MolHandler(smi, true)
+    mh.aromatize()
+    val q = mh.getMolecule.toFormat("smiles:u")
+    val isBenzene = q.equals(benzene)
+
+    // check for linear C chains
+    val maxChainLength = 8
+    val allCarbon = !mh.getMolecule.getAtomArray.exists(!_.getSymbol.equals("C"))
+    val hasRing = mh.getMolecule.getSSSR.length > 0
+    val noBranching = !mh.getMolecule.getAtomArray.exists(_.getBondCount > 2)
+
+    isBenzene || (allCarbon && !hasRing && noBranching && mh.getHeavyAtomCount < maxChainLength)
+  }
+
   def search = Action { implicit request =>
     implicit lazy val config = configuration
 
@@ -124,6 +152,7 @@ class Application @Inject()(cache: SyncCacheApi,
           case "" if smilesList.nonEmpty && smilesList.size <= 9 =>
             Redirect(routes.Application.displayTrends(smilesList, data.property))
           case _ if invalidSmiles(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>"+data.smiles + "</code> is an invalid SMILES string")))
+          case _ if trivialMolecule(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>"+data.smiles + "</code> is too frequent a fragment")))
           case _ => {
             if (smilesList.size + 1 > 9)
               BadRequest(views.html.error(this, Html("A maximum of 9 substructures can be compared")))

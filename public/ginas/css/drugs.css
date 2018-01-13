@@ -4,6 +4,10 @@ html,
         /* The html and body elements cannot have any padding or margin. */
       }
 
+p {
+    padding-top: 1em;
+}
+
 span.second-header {
     /* color: purple; */
     size: large;
