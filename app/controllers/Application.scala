@@ -4,7 +4,6 @@ import java.util.UUID
 import javax.inject._
 
 import chemaxon.formats.MolImporter
-import chemaxon.sss.search.MolSearch
 import chemaxon.util.MolHandler
 import play.api.cache.SyncCacheApi
 import play.api.db.Database
@@ -111,10 +110,8 @@ class Application @Inject()(cache: SyncCacheApi,
 
 
   def trivialMolecule(smi: String): Boolean = {
-    val  s = new MolSearch
-    val mol = new MolHandler("c1ccccc1", true)
-    mol.aromatize()
-    val benzene = mol.getMolecule.toFormat("smiles:u")
+    val benzene = "c1ccccc1"
+
     val mh = new MolHandler(smi, true)
     mh.aromatize()
     val q = mh.getMolecule.toFormat("smiles:u")
