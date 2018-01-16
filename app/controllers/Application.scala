@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 import javax.inject._
 
-import chemaxon.formats.MolImporter
+import chemaxon.formats.{MolFormatException, MolImporter}
 import chemaxon.util.MolHandler
 import play.api.cache.SyncCacheApi
 import play.api.db.Database
@@ -88,7 +88,12 @@ class Application @Inject()(cache: SyncCacheApi,
   }
 
   def invalidSmiles(smi: String): Boolean = {
-    val mol = MolImporter.importMol(smi)
+    var mol = MolImporter.importMol("C")
+    try {
+      mol = MolImporter.importMol(smi)
+    } catch {
+      case e: MolFormatException => return true
+    }
     val valenceErrors = mol.hasValenceError
     val emptyMol = mol.isEmpty
     val hasQuery = mol.isQuery
