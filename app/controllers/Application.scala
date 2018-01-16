@@ -111,11 +111,16 @@ class Application @Inject()(cache: SyncCacheApi,
 
   def trivialMolecule(smi: String): Boolean = {
     val benzene = "c1ccccc1"
+    val pyrrole = "c1cc[nH]c1"
 
-    val mh = new MolHandler(smi, true)
-    mh.aromatize()
-    val q = mh.getMolecule.toFormat("smiles:u")
+    val mh = new MolHandler(smi, false)
+
+    val mol = mh.getMolecule
+    mol.aromatize()
+    val q = mol.toFormat("smiles:u")
+
     val isBenzene = q.equals(benzene)
+    val isPyrrole = q.equals(pyrrole)
 
     // check for linear C chains
     val maxChainLength = 8
@@ -123,7 +128,7 @@ class Application @Inject()(cache: SyncCacheApi,
     val hasRing = mh.getMolecule.getSSSR.length > 0
     val noBranching = !mh.getMolecule.getAtomArray.exists(_.getBondCount > 2)
 
-    isBenzene || (allCarbon && !hasRing && noBranching && mh.getHeavyAtomCount < maxChainLength)
+    isBenzene || isPyrrole || (allCarbon && !hasRing && noBranching && mh.getHeavyAtomCount < maxChainLength)
   }
 
   def search = Action { implicit request =>
@@ -148,8 +153,8 @@ class Application @Inject()(cache: SyncCacheApi,
             BadRequest(views.html.error(this, Html("<p class='lead'>No SMILES was specified. Maybe you specified an empty string by mistake.</p>")))
           case "" if smilesList.nonEmpty && smilesList.size <= 9 =>
             Redirect(routes.Application.displayTrends(smilesList, data.property))
-          case _ if invalidSmiles(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>"+data.smiles + "</code> is an invalid SMILES string")))
-          case _ if trivialMolecule(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>"+data.smiles + "</code> is too frequent a fragment")))
+          case _ if invalidSmiles(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>" + data.smiles + "</code> is an invalid SMILES string")))
+          case _ if trivialMolecule(data.smiles.trim) => BadRequest(views.html.error(this, Html("<code>" + data.smiles + "</code> is too frequent a fragment")))
           case _ => {
             if (smilesList.size + 1 > 9)
               BadRequest(views.html.error(this, Html("A maximum of 9 substructures can be compared")))
